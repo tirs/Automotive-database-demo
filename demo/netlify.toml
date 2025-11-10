@@ -1,6 +1,7 @@
 [build]
   command = "npm run build"
   publish = "build"
+  environment = { PUBLIC_URL = "" }
 
 [[redirects]]
   from = "/*"

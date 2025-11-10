@@ -24,11 +24,19 @@ function PageViewTracker() {
 }
 
 function App() {
-  // Use basename for GitHub Pages deployment
-  // Only use basename if PUBLIC_URL is set (GitHub Pages), not for Netlify
-  const basename = process.env.PUBLIC_URL && process.env.PUBLIC_URL.startsWith('/') 
-    ? process.env.PUBLIC_URL 
-    : '';
+  // Use basename for GitHub Pages deployment only
+  // GitHub Pages uses subdirectory: /Automotive-database-demo
+  // Netlify serves from root, so basename should be empty
+  const getBasename = () => {
+    // Check if we're on GitHub Pages (has subdirectory in pathname)
+    if (window.location.pathname.startsWith('/Automotive-database-demo')) {
+      return '/Automotive-database-demo';
+    }
+    // For Netlify or other root deployments, use empty basename
+    return '';
+  };
+  
+  const basename = getBasename();
   
   return (
     <Router basename={basename}>
