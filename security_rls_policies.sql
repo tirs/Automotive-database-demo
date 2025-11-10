@@ -56,7 +56,11 @@ ALTER TABLE vehicle_appraisal ENABLE ROW LEVEL SECURITY;
 -- OPTION 1: PUBLIC READ, AUTHENTICATED WRITE (Recommended for Demo)
 -- ============================================================================
 -- This allows public read access but protects writes
+-- PERFECT FOR: Client demos, portfolios, public showcases
+-- SECURITY: Medium-High - Clients can view, only you can modify
+-- 
 -- Currently ACTIVE - Uncomment Option 2 if you want full public access
+-- See security_demo_config.sql for a cleaner demo-specific version
 
 -- Allow anyone to read (SELECT)
 CREATE POLICY "Public read access" ON manufacturer FOR SELECT USING (true);
