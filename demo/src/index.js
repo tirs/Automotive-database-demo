@@ -2,10 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import { initGA } from './analytics';
 
 // Google Analytics is initialized via script tag in index.html
-// No need to initialize here as it's already loaded
 
 // Error boundary for rendering
 const root = ReactDOM.createRoot(document.getElementById('root'));
