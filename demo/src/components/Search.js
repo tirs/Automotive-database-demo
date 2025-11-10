@@ -558,12 +558,21 @@ function Search() {
       <div className="glass-container">
         <div style={{ marginBottom: '24px' }}>
           <div style={{ display: 'flex', gap: '16px', marginBottom: '16px', flexWrap: 'wrap' }}>
-            <div style={{ flex: '1', minWidth: '200px' }}>
+            <div style={{ flex: '1', minWidth: '200px', position: 'relative' }}>
               <input
                 type="text"
-                placeholder="Search..."
+                placeholder="Search vehicles, owners, VINs, manufacturers..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setShowSuggestions(true);
+                }}
+                onFocus={() => {
+                  if (suggestions.length > 0) setShowSuggestions(true);
+                }}
+                onBlur={() => {
+                  setTimeout(() => setShowSuggestions(false), 200);
+                }}
                 style={{
                   width: '100%',
                   padding: '12px 16px',
@@ -574,6 +583,59 @@ function Search() {
                   fontSize: '16px'
                 }}
               />
+              {showSuggestions && suggestions.length > 0 && (
+                <div style={{
+                  position: 'absolute',
+                  top: '100%',
+                  left: 0,
+                  right: 0,
+                  marginTop: '4px',
+                  background: 'rgba(20, 27, 45, 0.95)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  borderRadius: '8px',
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                  zIndex: 1000,
+                  maxHeight: '300px',
+                  overflowY: 'auto'
+                }}>
+                  {suggestions.map((suggestion, idx) => (
+                    <div
+                      key={idx}
+                      onClick={() => {
+                        const text = suggestion.text.split(' - ')[0];
+                        setSearchTerm(text);
+                        setShowSuggestions(false);
+                      }}
+                      style={{
+                        padding: '12px 16px',
+                        cursor: 'pointer',
+                        borderBottom: idx < suggestions.length - 1 ? '1px solid rgba(255, 255, 255, 0.05)' : 'none',
+                        transition: 'background 0.2s ease',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = 'transparent';
+                      }}
+                    >
+                      <span style={{
+                        fontSize: '12px',
+                        padding: '2px 8px',
+                        background: 'rgba(255, 255, 255, 0.1)',
+                        borderRadius: '4px',
+                        color: 'rgba(255, 255, 255, 0.7)'
+                      }}>
+                        {suggestion.type}
+                      </span>
+                      <span style={{ color: 'rgba(255, 255, 255, 0.9)' }}>{suggestion.text}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
             <div style={{ minWidth: '150px' }}>
               <select
