@@ -10,6 +10,8 @@ function Search() {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const navigate = useNavigate();
 
   const searchTypes = [
@@ -45,7 +47,10 @@ function Search() {
       const searchResults = [];
 
       if (searchType === 'all' || searchType === 'vehicles') {
-        const { data, error } = await supabase
+        const existingIds = new Set();
+        
+        // 1. Search vehicles by direct fields (VIN, license plate, color, notes)
+        const { data: directVehicles, error: directError } = await supabase
           .from('vehicle')
           .select(`
             *,
@@ -56,10 +61,11 @@ function Search() {
             owner:owner_id (first_name, last_name)
           `)
           .or(`vin.ilike.%${searchTerm}%,license_plate.ilike.%${searchTerm}%,color.ilike.%${searchTerm}%,notes.ilike.%${searchTerm}%`)
-          .limit(10);
+          .limit(20);
 
-        if (!error && data) {
-          data.forEach(item => {
+        if (!directError && directVehicles) {
+          directVehicles.forEach(item => {
+            existingIds.add(item.id);
             const makeModel = `${item.vehicle_model?.manufacturer?.name || ''} ${item.vehicle_model?.name || ''}`.trim();
             searchResults.push({
               type: 'Vehicle',
@@ -69,6 +75,98 @@ function Search() {
               data: item
             });
           });
+        }
+
+        // 2. Search manufacturers by name, then find their vehicles
+        const { data: manufacturers, error: mfgError } = await supabase
+          .from('manufacturer')
+          .select('id, name')
+          .ilike('name', `%${searchTerm}%`)
+          .limit(10);
+
+        if (!mfgError && manufacturers && manufacturers.length > 0) {
+          const manufacturerIds = manufacturers.map(m => m.id);
+          
+          // Get vehicle models for these manufacturers
+          const { data: models, error: modelError } = await supabase
+            .from('vehicle_model')
+            .select('id')
+            .in('manufacturer_id', manufacturerIds)
+            .limit(50);
+
+          if (!modelError && models && models.length > 0) {
+            const modelIds = models.map(m => m.id);
+            
+            // Get vehicles with these models
+            const { data: vehiclesByMfg, error: vbmError } = await supabase
+              .from('vehicle')
+              .select(`
+                *,
+                vehicle_model:vehicle_model_id (
+                  name,
+                  manufacturer:manufacturer_id (name)
+                ),
+                owner:owner_id (first_name, last_name)
+              `)
+              .in('vehicle_model_id', modelIds)
+              .limit(20);
+
+            if (!vbmError && vehiclesByMfg) {
+              vehiclesByMfg.forEach(item => {
+                if (!existingIds.has(item.id)) {
+                  existingIds.add(item.id);
+                  const makeModel = `${item.vehicle_model?.manufacturer?.name || ''} ${item.vehicle_model?.name || ''}`.trim();
+                  searchResults.push({
+                    type: 'Vehicle',
+                    id: item.id,
+                    title: `${makeModel} ${item.year || ''}`.trim() || 'Unknown Vehicle',
+                    subtitle: `VIN: ${item.vin || 'N/A'} | License: ${item.license_plate || 'N/A'}`,
+                    data: item
+                  });
+                }
+              });
+            }
+          }
+        }
+
+        // 3. Search vehicle models by name, then find their vehicles
+        const { data: modelsByName, error: modelNameError } = await supabase
+          .from('vehicle_model')
+          .select('id, name, manufacturer:manufacturer_id (name)')
+          .ilike('name', `%${searchTerm}%`)
+          .limit(20);
+
+        if (!modelNameError && modelsByName && modelsByName.length > 0) {
+          const modelIdsByName = modelsByName.map(m => m.id);
+          
+          const { data: vehiclesByModel, error: vbmError2 } = await supabase
+            .from('vehicle')
+            .select(`
+              *,
+              vehicle_model:vehicle_model_id (
+                name,
+                manufacturer:manufacturer_id (name)
+              ),
+              owner:owner_id (first_name, last_name)
+            `)
+            .in('vehicle_model_id', modelIdsByName)
+            .limit(20);
+
+          if (!vbmError2 && vehiclesByModel) {
+            vehiclesByModel.forEach(item => {
+              if (!existingIds.has(item.id)) {
+                existingIds.add(item.id);
+                const makeModel = `${item.vehicle_model?.manufacturer?.name || ''} ${item.vehicle_model?.name || ''}`.trim();
+                searchResults.push({
+                  type: 'Vehicle',
+                  id: item.id,
+                  title: `${makeModel} ${item.year || ''}`.trim() || 'Unknown Vehicle',
+                  subtitle: `VIN: ${item.vin || 'N/A'} | License: ${item.license_plate || 'N/A'}`,
+                  data: item
+                });
+              }
+            });
+          }
         }
       }
 
@@ -331,9 +429,97 @@ function Search() {
     }
   };
 
+  // Fetch autocomplete suggestions
+  const fetchSuggestions = async (term) => {
+    if (!term.trim() || term.length < 2) {
+      setSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+
+    try {
+      const suggestionsList = [];
+
+      // Get manufacturer suggestions
+      const { data: manufacturers } = await supabase
+        .from('manufacturer')
+        .select('name')
+        .ilike('name', `%${term}%`)
+        .limit(5);
+
+      if (manufacturers) {
+        manufacturers.forEach(m => {
+          suggestionsList.push({ type: 'Manufacturer', text: m.name, category: 'vehicles' });
+        });
+      }
+
+      // Get model suggestions
+      const { data: models } = await supabase
+        .from('vehicle_model')
+        .select('name, manufacturer:manufacturer_id (name)')
+        .ilike('name', `%${term}%`)
+        .limit(5);
+
+      if (models) {
+        models.forEach(m => {
+          suggestionsList.push({ 
+            type: 'Model', 
+            text: `${m.manufacturer?.name || ''} ${m.name}`.trim(), 
+            category: 'vehicles' 
+          });
+        });
+      }
+
+      // Get owner name suggestions
+      const { data: owners } = await supabase
+        .from('owner')
+        .select('first_name, last_name')
+        .or(`first_name.ilike.%${term}%,last_name.ilike.%${term}%`)
+        .limit(5);
+
+      if (owners) {
+        owners.forEach(o => {
+          suggestionsList.push({ 
+            type: 'Owner', 
+            text: `${o.first_name} ${o.last_name}`, 
+            category: 'owners' 
+          });
+        });
+      }
+
+      // Get VIN suggestions
+      if (term.length >= 3) {
+        const { data: vehicles } = await supabase
+          .from('vehicle')
+          .select('vin, vehicle_model:vehicle_model_id (name, manufacturer:manufacturer_id (name))')
+          .ilike('vin', `%${term}%`)
+          .limit(3);
+
+        if (vehicles) {
+          vehicles.forEach(v => {
+            const makeModel = `${v.vehicle_model?.manufacturer?.name || ''} ${v.vehicle_model?.name || ''}`.trim();
+            suggestionsList.push({ 
+              type: 'VIN', 
+              text: `${makeModel} - ${v.vin}`, 
+              category: 'vehicles' 
+            });
+          });
+        }
+      }
+
+      setSuggestions(suggestionsList.slice(0, 8)); // Limit to 8 suggestions
+      setShowSuggestions(suggestionsList.length > 0);
+    } catch (err) {
+      // Silently fail for suggestions
+      setSuggestions([]);
+      setShowSuggestions(false);
+    }
+  };
+
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       performSearch();
+      fetchSuggestions(searchTerm);
     }, 300);
 
     return () => clearTimeout(timeoutId);
