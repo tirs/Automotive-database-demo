@@ -22,8 +22,7 @@ jobs:
       
       - name: Install dependencies
         working-directory: ./demo
-        run: |
-          npm ci --legacy-peer-deps || npm install --legacy-peer-deps
+        run: npm ci
       
       - name: Build
         working-directory: ./demo
