@@ -286,5 +286,5 @@ If you encounter issues:
 
 Your app will be live at: `https://your-site.netlify.app`
 
-🎉 **Congratulations!** Your automotive database demo is now accessible to anyone with the URL!
+**Congratulations!** Your automotive database demo is now accessible to anyone with the URL!
 

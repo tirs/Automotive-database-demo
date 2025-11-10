@@ -2,7 +2,7 @@
 
 A normalized PostgreSQL/Supabase database schema designed to accurately model real-world automotive data relationships, including vehicles, owners, manufacturers, service records, and parts management.
 
-## 🚀 Live Demo
+##  Live Demo
 
 **Try the application live:** [https://automotive-supabase-schema.netlify.app/](https://automotive-supabase-schema.netlify.app/)
 
@@ -414,7 +414,7 @@ See `DEPLOYMENT.md` for detailed deployment instructions.
 
 ### Live Demo
 
-**🌐 Live Application:** [https://automotive-supabase-schema.netlify.app/](https://automotive-supabase-schema.netlify.app/)
+**Live Application:** [https://automotive-supabase-schema.netlify.app/](https://automotive-supabase-schema.netlify.app/)
 
 The application is deployed on Netlify and includes:
 - Dashboard with statistics
@@ -423,7 +423,7 @@ The application is deployed on Netlify and includes:
 - No installation required!
 
 **Deployment Options:**
-- Netlify: `https://automotive-supabase-schema.netlify.app/` ✅ (Live)
+- Netlify: `https://automotive-supabase-schema.netlify.app/` (Live)
 - Vercel: `https://your-project.vercel.app` (Alternative)
 
 ## Future Enhancements

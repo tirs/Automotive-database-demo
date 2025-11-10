@@ -280,11 +280,11 @@ This document explains the key design decisions and rationale behind the databas
 
 **Key Design Principles:**
 
-1. ✅ **Normalization:** 3NF to eliminate redundancy
-2. ✅ **Integrity:** Foreign keys and constraints enforce business rules
-3. ✅ **Performance:** Strategic indexing for common queries
-4. ✅ **Flexibility:** Optional fields and extensible structure
-5. ✅ **Scalability:** UUID keys and normalized design support growth
+1.  **Normalization:** 3NF to eliminate redundancy
+2.  **Integrity:** Foreign keys and constraints enforce business rules
+3.  **Performance:** Strategic indexing for common queries
+4.  **Flexibility:** Optional fields and extensible structure
+5.  **Scalability:** UUID keys and normalized design support growth
 
 **Result:**
 A robust, maintainable, and performant database schema that accurately models real-world automotive data relationships while supporting efficient queries and future growth.

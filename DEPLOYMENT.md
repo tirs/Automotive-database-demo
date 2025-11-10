@@ -64,7 +64,7 @@ Quick steps:
    - Click "Add new site" > "Import an existing project"
    - Select your GitHub repository
    - Configure:
-     - **Base directory**: `demo` ⚠️ Important!
+     - **Base directory**: `demo` (Important!)
      - **Build command**: `npm run build`
      - **Publish directory**: `build` (relative to demo folder)
 
@@ -80,8 +80,8 @@ Quick steps:
    - You can customize the domain name
 
 **Configuration files are already set up:**
-- ✅ `demo/netlify.toml` - Netlify configuration
-- ✅ `demo/public/_redirects` - SPA routing support
+- `demo/netlify.toml` - Netlify configuration
+- `demo/public/_redirects` - SPA routing support
 
 ---
 

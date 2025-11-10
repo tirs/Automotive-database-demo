@@ -2,7 +2,7 @@
 
 A React-based web application that demonstrates the Automotive Database Schema with a user-friendly interface for viewing vehicles, owners, and service records.
 
-## 🚀 Live Demo
+## Live Demo
 
 **Try it now:** [https://automotive-supabase-schema.netlify.app/](https://automotive-supabase-schema.netlify.app/)
 

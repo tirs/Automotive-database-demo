@@ -46,7 +46,7 @@ Quick steps:
 3. "Add new site" > "Import an existing project"
 4. Select repository
 5. **Important Settings:**
-   - Base directory: `demo` ⚠️
+   - Base directory: `demo` (Important)
    - Build command: `npm run build`
    - Publish directory: `demo/build`
 6. Add environment variables:
@@ -56,8 +56,8 @@ Quick steps:
 8. Your app will be live at: `https://your-site.netlify.app`
 
 **Configuration files already ready:**
-- ✅ `demo/netlify.toml` configured
-- ✅ `demo/public/_redirects` for routing
+- `demo/netlify.toml` configured
+- `demo/public/_redirects` for routing
 
 ---
 

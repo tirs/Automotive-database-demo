@@ -1,6 +1,6 @@
 # Netlify Deployment - Quick Start
 
-## 🚀 Deploy in 5 Minutes
+## Deploy in 5 Minutes
 
 ### Step 1: Push to GitHub
 ```powershell
@@ -15,7 +15,7 @@
 4. **Select** your GitHub repository
 5. **Configure Build Settings:**
    - Click "Show advanced" or "Change options"
-   - **Base directory:** `demo` ⚠️
+   - **Base directory:** `demo` (Important)
    - **Build command:** `npm run build`
    - **Publish directory:** `build`
 6. **Add Environment Variables:**
@@ -32,14 +32,14 @@
 
 ---
 
-## ✅ Configuration Files Ready
+## Configuration Files Ready
 
-- ✅ `demo/netlify.toml` - Build configuration
-- ✅ `demo/public/_redirects` - Routing support
+- `demo/netlify.toml` - Build configuration
+- `demo/public/_redirects` - Routing support
 
 ---
 
-## 📚 Need More Details?
+## Need More Details?
 
 See **[NETLIFY_DEPLOY.md](NETLIFY_DEPLOY.md)** for:
 - Detailed step-by-step instructions
@@ -49,7 +49,7 @@ See **[NETLIFY_DEPLOY.md](NETLIFY_DEPLOY.md)** for:
 
 ---
 
-## 🎉 That's It!
+## That's It!
 
 Your app is now live and accessible to anyone with the URL!
 
