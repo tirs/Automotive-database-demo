@@ -1,5 +1,5 @@
 [build]
-  command = "PUBLIC_URL= npm run build"
+  command = "npm run build:netlify"
   publish = "build"
 
 [[redirects]]

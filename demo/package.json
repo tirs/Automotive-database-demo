@@ -2,7 +2,6 @@
   "name": "automotive-database-demo",
   "version": "1.0.0",
   "description": "React demo application for Automotive Database Schema",
-  "homepage": "https://tirs.github.io/Automotive-database-demo",
   "private": true,
   "dependencies": {
     "@supabase/supabase-js": "^2.38.4",
@@ -14,7 +13,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "build:netlify": "cross-env PUBLIC_URL= react-scripts build",
+    "build:netlify": "node scripts/build-netlify.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
@@ -36,6 +35,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "homepage": "https://tirs.github.io/Automotive-database-demo"
 }
-
