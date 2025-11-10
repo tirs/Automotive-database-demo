@@ -1,0 +1,108 @@
+name: Deploy Database to Supabase
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'schema.sql'
+      - 'schema_enhancements.sql'
+      - 'sample_data.sql'
+      - 'sample_data_enhancements.sql'
+  workflow_dispatch: # Allow manual triggering
+  schedule:
+    # Optional: Run daily at 2 AM UTC to ensure schema is up to date
+    - cron: '0 2 * * *'
+
+jobs:
+  deploy-database:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      
+      - name: Install Supabase CLI
+        run: |
+          npm install -g supabase
+          supabase --version
+      
+      - name: Deploy Base Schema
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+          SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
+        run: |
+          echo "Deploying base schema..."
+          
+          # Method 1: Using Supabase CLI (if you have project linked)
+          # supabase db push --db-url "postgresql://postgres:[PASSWORD]@[HOST]:5432/postgres"
+          
+          # Method 2: Using psql directly (more reliable)
+          # Install PostgreSQL client
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+          
+          # Get database connection string
+          DB_URL="postgresql://postgres.${SUPABASE_PROJECT_ID}:${SUPABASE_DB_PASSWORD}@aws-0-us-east-1.pooler.supabase.com:6543/postgres"
+          
+          # Deploy schema files
+          if [ -f "schema.sql" ]; then
+            echo "Running schema.sql..."
+            PGPASSWORD="${SUPABASE_DB_PASSWORD}" psql "${DB_URL}" -f schema.sql || echo "Schema may already exist, continuing..."
+          fi
+          
+          if [ -f "schema_enhancements.sql" ]; then
+            echo "Running schema_enhancements.sql..."
+            PGPASSWORD="${SUPABASE_DB_PASSWORD}" psql "${DB_URL}" -f schema_enhancements.sql || echo "Enhancements may already exist, continuing..."
+          fi
+      
+      - name: Deploy Sample Data (Optional)
+        if: ${{ github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[deploy-data]') }}
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+          SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
+        run: |
+          echo "Deploying sample data..."
+          
+          DB_URL="postgresql://postgres.${SUPABASE_PROJECT_ID}:${SUPABASE_DB_PASSWORD}@aws-0-us-east-1.pooler.supabase.com:6543/postgres"
+          
+          if [ -f "sample_data.sql" ]; then
+            echo "Running sample_data.sql..."
+            PGPASSWORD="${SUPABASE_DB_PASSWORD}" psql "${DB_URL}" -f sample_data.sql || echo "Sample data may already exist, continuing..."
+          fi
+          
+          if [ -f "sample_data_enhancements.sql" ]; then
+            echo "Running sample_data_enhancements.sql..."
+            PGPASSWORD="${SUPABASE_DB_PASSWORD}" psql "${DB_URL}" -f sample_data_enhancements.sql || echo "Enhanced sample data may already exist, continuing..."
+          fi
+      
+      - name: Verify Deployment
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+          SUPABASE_PROJECT_ID: ${{ secrets.SUPABASE_PROJECT_ID }}
+        run: |
+          echo "Verifying database deployment..."
+          
+          DB_URL="postgresql://postgres.${SUPABASE_PROJECT_ID}:${SUPABASE_DB_PASSWORD}@aws-0-us-east-1.pooler.supabase.com:6543/postgres"
+          
+          # Check if tables exist
+          TABLE_COUNT=$(PGPASSWORD="${SUPABASE_DB_PASSWORD}" psql "${DB_URL}" -t -c "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE';")
+          
+          echo "Found $TABLE_COUNT tables in database"
+          
+          if [ "$TABLE_COUNT" -lt 10 ]; then
+            echo "Warning: Expected more tables. Deployment may have issues."
+            exit 1
+          fi
+          
+          echo "Database deployment verified successfully!"
+

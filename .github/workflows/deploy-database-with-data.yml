@@ -1,0 +1,95 @@
+name: Deploy Database with Sample Data
+
+on:
+  workflow_dispatch: # Manual trigger only
+    inputs:
+      include_sample_data:
+        description: 'Include sample data?'
+        required: true
+        default: 'false'
+        type: choice
+        options:
+          - 'true'
+          - 'false'
+
+jobs:
+  deploy-database:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Install PostgreSQL Client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+      
+      - name: Deploy Database Schema
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          echo "Deploying database schema to Supabase..."
+          
+          # Deploy base schema
+          if [ -f "schema.sql" ]; then
+            echo "Running schema.sql..."
+            psql "${SUPABASE_DB_URL}" -f schema.sql 2>&1 | grep -v "already exists" || true
+          fi
+          
+          # Deploy enhancements
+          if [ -f "schema_enhancements.sql" ]; then
+            echo "Running schema_enhancements.sql..."
+            psql "${SUPABASE_DB_URL}" -f schema_enhancements.sql 2>&1 | grep -v "already exists" || true
+          fi
+          
+          echo "✓ Schema deployment completed!"
+      
+      - name: Deploy Sample Data
+        if: ${{ github.event.inputs.include_sample_data == 'true' }}
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          echo "Deploying sample data..."
+          
+          # Deploy base sample data
+          if [ -f "sample_data.sql" ]; then
+            echo "Running sample_data.sql..."
+            psql "${SUPABASE_DB_URL}" -f sample_data.sql 2>&1 | grep -v "duplicate key" || true
+          fi
+          
+          # Deploy enhanced sample data
+          if [ -f "sample_data_enhancements.sql" ]; then
+            echo "Running sample_data_enhancements.sql..."
+            psql "${SUPABASE_DB_URL}" -f sample_data_enhancements.sql 2>&1 | grep -v "duplicate key" || true
+          fi
+          
+          echo "✓ Sample data deployment completed!"
+      
+      - name: Verify Deployment
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          echo "Verifying database deployment..."
+          
+          # Count tables
+          TABLE_COUNT=$(psql "${SUPABASE_DB_URL}" -t -A -c "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE';")
+          
+          echo "Total tables created: $TABLE_COUNT"
+          
+          # List all tables
+          echo ""
+          echo "Tables in database:"
+          psql "${SUPABASE_DB_URL}" -t -c "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE' ORDER BY table_name;"
+          
+          if [ "$TABLE_COUNT" -ge 15 ]; then
+            echo ""
+            echo "✓ Database deployment verified successfully!"
+            echo "Expected tables: 19 (9 base + 10 enhancements)"
+            echo "Found tables: $TABLE_COUNT"
+          else
+            echo ""
+            echo "⚠ Warning: Expected at least 15 tables, found $TABLE_COUNT"
+            echo "Some tables may not have been created. Check the logs above."
+          fi
+

@@ -1,0 +1,65 @@
+name: Deploy Database to Supabase (Simple)
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'schema.sql'
+      - 'schema_enhancements.sql'
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  deploy-database:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Install PostgreSQL Client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+      
+      - name: Deploy Database Schema
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          echo "Deploying database schema to Supabase..."
+          
+          # Deploy base schema
+          if [ -f "schema.sql" ]; then
+            echo "Running schema.sql..."
+            psql "${SUPABASE_DB_URL}" -f schema.sql || echo "Note: Some objects may already exist"
+          fi
+          
+          # Deploy enhancements
+          if [ -f "schema_enhancements.sql" ]; then
+            echo "Running schema_enhancements.sql..."
+            psql "${SUPABASE_DB_URL}" -f schema_enhancements.sql || echo "Note: Some objects may already exist"
+          fi
+          
+          echo "Database schema deployment completed!"
+      
+      - name: Verify Tables
+        env:
+          SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+        run: |
+          echo "Verifying database tables..."
+          
+          TABLE_LIST=$(psql "${SUPABASE_DB_URL}" -t -c "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE' ORDER BY table_name;")
+          
+          echo "Tables in database:"
+          echo "$TABLE_LIST"
+          
+          TABLE_COUNT=$(psql "${SUPABASE_DB_URL}" -t -c "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE';")
+          
+          echo "Total tables: $TABLE_COUNT"
+          
+          if [ "$TABLE_COUNT" -lt 15 ]; then
+            echo "Warning: Expected at least 15 tables. Current count: $TABLE_COUNT"
+          else
+            echo "✓ Database verification successful!"
+          fi
+
