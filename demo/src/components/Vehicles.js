@@ -16,6 +16,9 @@ function Vehicles() {
   const fetchVehicles = async () => {
     try {
       setLoading(true);
+      if (!supabase) {
+        throw new Error('Supabase client not initialized. Please check environment variables.');
+      }
       const { data, error } = await supabase
         .from('vehicle')
         .select(`

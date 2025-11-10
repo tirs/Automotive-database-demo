@@ -20,6 +20,10 @@ function Dashboard() {
     try {
       setLoading(true);
       
+      if (!supabase) {
+        throw new Error('Supabase client not initialized. Please check environment variables.');
+      }
+      
       const [vehiclesResult, ownersResult, servicesResult] = await Promise.all([
         supabase.from('vehicle').select('id', { count: 'exact', head: true }),
         supabase.from('owner').select('id', { count: 'exact', head: true }),

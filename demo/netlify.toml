@@ -1,7 +1,6 @@
 [build]
   command = "npm run build"
   publish = "build"
-  environment = { PUBLIC_URL = "" }
 
 [[redirects]]
   from = "/*"
@@ -10,6 +9,7 @@
 
 [build.environment]
   NODE_VERSION = "18"
+  PUBLIC_URL = ""
   # Omit keys from secrets scanning (safe for frontend exposure)
   # Supabase anon key and GA Measurement ID are designed for client-side use
   SECRETS_SCAN_OMIT_KEYS = "REACT_APP_SUPABASE_URL,REACT_APP_SUPABASE_ANON_KEY,REACT_APP_GA_MEASUREMENT_ID"
