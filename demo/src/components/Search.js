@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
 import { useNavigate } from 'react-router-dom';
 import './Components.css';
+import './DetailModal.css';
 
 function Search() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -392,6 +393,7 @@ function Search() {
               <select
                 value={searchType}
                 onChange={(e) => setSearchType(e.target.value)}
+                className="detail-select"
                 style={{
                   width: '100%',
                   padding: '12px 16px',
