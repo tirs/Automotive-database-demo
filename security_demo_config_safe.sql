@@ -1,6 +1,6 @@
--- Security Configuration for Client Demo
--- This is the RECOMMENDED configuration for a public demo/portfolio
--- Allows clients to view all data, but protects against unauthorized modifications
+-- Security Configuration for Client Demo (Safe Version - Handles Existing Policies)
+-- This version safely drops existing policies before creating new ones
+-- Use this if you get "policy already exists" errors
 
 -- ============================================================================
 -- STEP 1: ENABLE ROW LEVEL SECURITY ON ALL TABLES
@@ -31,10 +31,10 @@ ALTER TABLE vehicle_document ENABLE ROW LEVEL SECURITY;
 ALTER TABLE vehicle_appraisal ENABLE ROW LEVEL SECURITY;
 
 -- ============================================================================
--- STEP 2: DROP EXISTING POLICIES (if any)
+-- STEP 2: DROP EXISTING POLICIES (Safe - won't error if they don't exist)
 -- ============================================================================
 
--- Drop existing policies if they exist (to avoid conflicts)
+-- Drop all existing policies on these tables
 DO $$ 
 DECLARE
     r RECORD;
@@ -43,9 +43,21 @@ BEGIN
         SELECT schemaname, tablename, policyname 
         FROM pg_policies 
         WHERE schemaname = 'public' 
-        AND policyname IN ('Public read access', 'Public full access', 'Authenticated write access', 'No writes allowed')
+        AND tablename IN (
+            'manufacturer', 'vehicle_model', 'owner', 'vehicle', 
+            'service_record', 'service_center', 'technician',
+            'warranty', 'warranty_claim', 'insurance_policy', 'insurance_claim',
+            'inspection', 'accident', 'damage_record', 'financing', 'payment',
+            'vehicle_location', 'trip', 'recall', 'vehicle_recall_status',
+            'fuel_record', 'vehicle_document', 'vehicle_appraisal'
+        )
     ) LOOP
-        EXECUTE format('DROP POLICY IF EXISTS %I ON %I.%I', r.policyname, r.schemaname, r.tablename);
+        BEGIN
+            EXECUTE format('DROP POLICY IF EXISTS %I ON %I.%I', r.policyname, r.schemaname, r.tablename);
+        EXCEPTION WHEN OTHERS THEN
+            -- Ignore errors if policy doesn't exist
+            NULL;
+        END;
     END LOOP;
 END $$;
 
@@ -79,26 +91,11 @@ CREATE POLICY "Public read access" ON vehicle_document FOR SELECT USING (true);
 CREATE POLICY "Public read access" ON vehicle_appraisal FOR SELECT USING (true);
 
 -- ============================================================================
--- STEP 4: PROTECT WRITES (Choose ONE option below)
+-- STEP 4: PROTECT WRITES (Only authenticated users can modify)
 -- ============================================================================
 
--- OPTION A: NO WRITES ALLOWED (Safest for Demo)
--- Prevents anyone from modifying data - even you
--- Use this if you only want clients to VIEW the demo
--- Uncomment the lines below:
-
-/*
-CREATE POLICY "No writes allowed" ON manufacturer FOR INSERT WITH CHECK (false);
-CREATE POLICY "No writes allowed" ON manufacturer FOR UPDATE USING (false);
-CREATE POLICY "No writes allowed" ON manufacturer FOR DELETE USING (false);
--- Repeat for all tables...
-*/
-
--- OPTION B: AUTHENTICATED WRITES ONLY (Recommended)
 -- Only logged-in users can modify data
--- You can log in to make changes, but clients cannot
--- This is the DEFAULT and is already active below:
-
+-- Clients cannot edit, delete, or insert
 CREATE POLICY "Authenticated write access" ON manufacturer FOR ALL USING (auth.role() = 'authenticated');
 CREATE POLICY "Authenticated write access" ON vehicle_model FOR ALL USING (auth.role() = 'authenticated');
 CREATE POLICY "Authenticated write access" ON owner FOR ALL USING (auth.role() = 'authenticated');
@@ -124,7 +121,7 @@ CREATE POLICY "Authenticated write access" ON vehicle_document FOR ALL USING (au
 CREATE POLICY "Authenticated write access" ON vehicle_appraisal FOR ALL USING (auth.role() = 'authenticated');
 
 -- ============================================================================
--- STEP 5: VERIFICATION
+-- VERIFICATION
 -- ============================================================================
 
 -- Check RLS is enabled
