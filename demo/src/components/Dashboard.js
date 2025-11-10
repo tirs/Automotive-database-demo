@@ -7,7 +7,13 @@ function Dashboard() {
     totalVehicles: 0,
     totalOwners: 0,
     totalServices: 0,
-    totalRevenue: 0
+    totalRevenue: 0,
+    totalWarranties: 0,
+    totalInsurance: 0,
+    totalInspections: 0,
+    totalAccidents: 0,
+    totalRecalls: 0,
+    totalFuelCost: 0
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -24,10 +30,26 @@ function Dashboard() {
         throw new Error('Supabase client not initialized. Please check environment variables.');
       }
       
-      const [vehiclesResult, ownersResult, servicesResult] = await Promise.all([
+      const [
+        vehiclesResult, 
+        ownersResult, 
+        servicesResult,
+        warrantiesResult,
+        insuranceResult,
+        inspectionsResult,
+        accidentsResult,
+        recallsResult,
+        fuelResult
+      ] = await Promise.all([
         supabase.from('vehicle').select('id', { count: 'exact', head: true }),
         supabase.from('owner').select('id', { count: 'exact', head: true }),
-        supabase.from('service_record').select('id, total_cost', { count: 'exact' })
+        supabase.from('service_record').select('id, total_cost', { count: 'exact' }),
+        supabase.from('warranty').select('id', { count: 'exact', head: true }),
+        supabase.from('insurance_policy').select('id', { count: 'exact', head: true }),
+        supabase.from('inspection').select('id', { count: 'exact', head: true }),
+        supabase.from('accident').select('id', { count: 'exact', head: true }),
+        supabase.from('recall').select('id', { count: 'exact', head: true }),
+        supabase.from('fuel_record').select('id, total_cost', { count: 'exact' })
       ]);
 
       if (vehiclesResult.error) throw vehiclesResult.error;
@@ -37,11 +59,20 @@ function Dashboard() {
       const totalRevenue = servicesResult.data?.reduce((sum, record) => 
         sum + (parseFloat(record.total_cost) || 0), 0) || 0;
 
+      const totalFuelCost = fuelResult.data?.reduce((sum, record) => 
+        sum + (parseFloat(record.total_cost) || 0), 0) || 0;
+
       setStats({
         totalVehicles: vehiclesResult.count || 0,
         totalOwners: ownersResult.count || 0,
         totalServices: servicesResult.count || 0,
-        totalRevenue: totalRevenue.toFixed(2)
+        totalRevenue: totalRevenue.toFixed(2),
+        totalWarranties: warrantiesResult.count || 0,
+        totalInsurance: insuranceResult.count || 0,
+        totalInspections: inspectionsResult.count || 0,
+        totalAccidents: accidentsResult.count || 0,
+        totalRecalls: recallsResult.count || 0,
+        totalFuelCost: totalFuelCost.toFixed(2)
       });
     } catch (err) {
       setError(err.message);
@@ -128,8 +159,32 @@ function Dashboard() {
       value: stats.totalServices
     },
     {
-      title: 'Total Revenue',
+      title: 'Service Revenue',
       value: '$' + stats.totalRevenue
+    },
+    {
+      title: 'Active Warranties',
+      value: stats.totalWarranties
+    },
+    {
+      title: 'Insurance Policies',
+      value: stats.totalInsurance
+    },
+    {
+      title: 'Inspections',
+      value: stats.totalInspections
+    },
+    {
+      title: 'Accidents',
+      value: stats.totalAccidents
+    },
+    {
+      title: 'Open Recalls',
+      value: stats.totalRecalls
+    },
+    {
+      title: 'Fuel Costs',
+      value: '$' + stats.totalFuelCost
     }
   ];
 
