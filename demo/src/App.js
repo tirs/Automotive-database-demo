@@ -25,7 +25,10 @@ function PageViewTracker() {
 
 function App() {
   // Use basename for GitHub Pages deployment
-  const basename = process.env.PUBLIC_URL || '';
+  // Only use basename if PUBLIC_URL is set (GitHub Pages), not for Netlify
+  const basename = process.env.PUBLIC_URL && process.env.PUBLIC_URL.startsWith('/') 
+    ? process.env.PUBLIC_URL 
+    : '';
   
   return (
     <Router basename={basename}>
