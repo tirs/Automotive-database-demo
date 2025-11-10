@@ -111,13 +111,10 @@ function BulkOperations() {
             <select
               value={entityType}
               onChange={(e) => setEntityType(e.target.value)}
+              className="detail-select"
               style={{
                 width: '100%',
                 padding: '12px 16px',
-                background: 'rgba(255, 255, 255, 0.05)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                borderRadius: '8px',
-                color: 'rgba(255, 255, 255, 0.9)',
                 fontSize: '16px'
               }}
             >
@@ -132,13 +129,10 @@ function BulkOperations() {
             <select
               value={operation}
               onChange={(e) => setOperation(e.target.value)}
+              className="detail-select"
               style={{
                 width: '100%',
                 padding: '12px 16px',
-                background: 'rgba(255, 255, 255, 0.05)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                borderRadius: '8px',
-                color: 'rgba(255, 255, 255, 0.9)',
                 fontSize: '16px'
               }}
             >
@@ -155,13 +149,10 @@ function BulkOperations() {
               <select
                 value={filters.newStatus || ''}
                 onChange={(e) => setFilters({ ...filters, newStatus: e.target.value })}
+                className="detail-select"
                 style={{
                   width: '100%',
                   padding: '12px 16px',
-                  background: 'rgba(255, 255, 255, 0.05)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                  borderRadius: '8px',
-                  color: 'rgba(255, 255, 255, 0.9)',
                   fontSize: '16px'
                 }}
               >
@@ -179,13 +170,10 @@ function BulkOperations() {
             <select
               value={filters.status || ''}
               onChange={(e) => setFilters({ ...filters, status: e.target.value })}
+              className="detail-select"
               style={{
                 width: '100%',
                 padding: '12px 16px',
-                background: 'rgba(255, 255, 255, 0.05)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                borderRadius: '8px',
-                color: 'rgba(255, 255, 255, 0.9)',
                 fontSize: '16px'
               }}
             >
@@ -205,7 +193,7 @@ function BulkOperations() {
               background: loading || !operation ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.15)',
               border: '1px solid rgba(255, 255, 255, 0.2)',
               borderRadius: '8px',
-              color: '#fff',
+              color: 'rgba(255, 255, 255, 0.9)',
               fontSize: '16px',
               fontWeight: 600,
               cursor: loading || !operation ? 'not-allowed' : 'pointer',

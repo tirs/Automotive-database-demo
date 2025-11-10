@@ -183,13 +183,10 @@ function Reports() {
             <select
               value={reportType}
               onChange={(e) => setReportType(e.target.value)}
+              className="detail-select"
               style={{
                 width: '100%',
                 padding: '12px 16px',
-                background: 'rgba(255, 255, 255, 0.05)',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                borderRadius: '8px',
-                color: 'rgba(255, 255, 255, 0.9)',
                 fontSize: '16px'
               }}
             >
@@ -207,13 +204,10 @@ function Reports() {
                 type="date"
                 value={dateRange.start}
                 onChange={(e) => setDateRange({ ...dateRange, start: e.target.value })}
+                className="detail-input"
                 style={{
                   width: '100%',
                   padding: '12px 16px',
-                  background: 'rgba(255, 255, 255, 0.05)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                  borderRadius: '8px',
-                  color: 'rgba(255, 255, 255, 0.9)',
                   fontSize: '16px'
                 }}
               />
@@ -224,13 +218,10 @@ function Reports() {
                 type="date"
                 value={dateRange.end}
                 onChange={(e) => setDateRange({ ...dateRange, end: e.target.value })}
+                className="detail-input"
                 style={{
                   width: '100%',
                   padding: '12px 16px',
-                  background: 'rgba(255, 255, 255, 0.05)',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
-                  borderRadius: '8px',
-                  color: 'rgba(255, 255, 255, 0.9)',
                   fontSize: '16px'
                 }}
               />
@@ -245,7 +236,7 @@ function Reports() {
               background: loading || !reportType ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.15)',
               border: '1px solid rgba(255, 255, 255, 0.2)',
               borderRadius: '8px',
-              color: '#fff',
+              color: 'rgba(255, 255, 255, 0.9)',
               fontSize: '16px',
               fontWeight: 600,
               cursor: loading || !reportType ? 'not-allowed' : 'pointer'

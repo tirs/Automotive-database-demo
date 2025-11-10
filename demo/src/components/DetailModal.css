@@ -191,6 +191,27 @@
   color: rgba(255, 255, 255, 0.9);
 }
 
+/* Ensure select dropdowns in BulkOperations and Reports also use dark mode */
+select.detail-select,
+select[class*="detail-select"] {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
+select.detail-select:focus,
+select[class*="detail-select"]:focus {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.2) !important;
+  outline: none !important;
+}
+
+select.detail-select option,
+select[class*="detail-select"] option {
+  background: #141b2d !important;
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+
 .detail-textarea {
   width: 100%;
   padding: 10px 12px;
