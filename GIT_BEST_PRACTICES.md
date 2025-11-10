@@ -237,7 +237,7 @@ The `.github/workflows/deploy.yml` file enables:
 
 ---
 
-## 📝 Summary
+## Summary
 
 **What We Did:**
 1. Initialized Git repository
