@@ -59,23 +59,30 @@ jobs:
         run: |
           echo "Deploying sample data..."
           
-          # Deploy base sample data (ignore duplicate key errors)
+          # Deploy base sample data (show all output, ignore duplicate key errors)
           if [ -f "sample_data.sql" ]; then
             echo "Running sample_data.sql..."
             psql "${SUPABASE_DB_URL}" -f sample_data.sql 2>&1 | grep -v "duplicate key\|already exists" || true
             echo "✓ Base sample data deployment completed"
+          else
+            echo "⚠ sample_data.sql not found, skipping..."
           fi
           
-          # Deploy enhanced sample data (ignore duplicate key errors)
+          # Deploy enhanced sample data (show all output, ignore duplicate key errors)
           if [ -f "sample_data_enhancements.sql" ]; then
             echo "Running sample_data_enhancements.sql..."
-            psql "${SUPABASE_DB_URL}" -f sample_data_enhancements.sql 2>&1 | grep -v "duplicate key\|already exists" || true
+            echo "--- Full output (errors will be shown) ---"
+            psql "${SUPABASE_DB_URL}" -f sample_data_enhancements.sql 2>&1 | tee /tmp/sample_data_output.log
+            echo "--- Filtered output (duplicate keys hidden) ---"
+            grep -v "duplicate key\|already exists" /tmp/sample_data_output.log || true
             echo "✓ Enhanced sample data deployment completed"
+          else
+            echo "⚠ sample_data_enhancements.sql not found, skipping..."
           fi
           
           echo "✓ Sample data deployment completed!"
       
-      - name: Verify Tables
+      - name: Verify Tables and Data
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: |
@@ -86,13 +93,60 @@ jobs:
           echo "Tables in database:"
           echo "$TABLE_LIST"
           
-          TABLE_COUNT=$(psql "${SUPABASE_DB_URL}" -t -c "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE';")
+          TABLE_COUNT=$(psql "${SUPABASE_DB_URL}" -t -A -c "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE';")
           
           echo "Total tables: $TABLE_COUNT"
           
           if [ "$TABLE_COUNT" -lt 15 ]; then
-            echo "Warning: Expected at least 15 tables. Current count: $TABLE_COUNT"
+            echo "⚠ Warning: Expected at least 15 tables. Current count: $TABLE_COUNT"
           else
-            echo "✓ Database verification successful!"
+            echo "✓ Database tables verification successful!"
+          fi
+          
+          echo ""
+          echo "Verifying sample data in enhancement tables..."
+          echo "--- Record counts ---"
+          
+          # Check record counts in enhancement tables
+          psql "${SUPABASE_DB_URL}" -c "
+            SELECT 
+              'warranty' as table_name, 
+              COUNT(*) as record_count 
+            FROM warranty
+            UNION ALL
+            SELECT 'insurance_policy', COUNT(*) FROM insurance_policy
+            UNION ALL
+            SELECT 'inspection', COUNT(*) FROM inspection
+            UNION ALL
+            SELECT 'accident', COUNT(*) FROM accident
+            UNION ALL
+            SELECT 'financing', COUNT(*) FROM financing
+            UNION ALL
+            SELECT 'recall', COUNT(*) FROM recall
+            UNION ALL
+            SELECT 'fuel_record', COUNT(*) FROM fuel_record
+            UNION ALL
+            SELECT 'vehicle_document', COUNT(*) FROM vehicle_document
+            UNION ALL
+            SELECT 'appraisal', COUNT(*) FROM appraisal
+            ORDER BY table_name;
+          " || echo "⚠ Error checking record counts - tables may not exist or have no data"
+          
+          echo ""
+          echo "--- Summary ---"
+          WARRANTY_COUNT=$(psql "${SUPABASE_DB_URL}" -t -A -c "SELECT COUNT(*) FROM warranty;" 2>/dev/null || echo "0")
+          ACCIDENT_COUNT=$(psql "${SUPABASE_DB_URL}" -t -A -c "SELECT COUNT(*) FROM accident;" 2>/dev/null || echo "0")
+          INSURANCE_COUNT=$(psql "${SUPABASE_DB_URL}" -t -A -c "SELECT COUNT(*) FROM insurance_policy;" 2>/dev/null || echo "0")
+          
+          echo "Warranty records: $WARRANTY_COUNT"
+          echo "Accident records: $ACCIDENT_COUNT"
+          echo "Insurance records: $INSURANCE_COUNT"
+          
+          if [ "$WARRANTY_COUNT" = "0" ] && [ "$ACCIDENT_COUNT" = "0" ] && [ "$INSURANCE_COUNT" = "0" ]; then
+            echo "⚠ WARNING: No sample data found in enhancement tables!"
+            echo "The sample_data_enhancements.sql may not have executed successfully."
+            echo "Check the 'Deploy Sample Data' step logs above for errors."
+          else
+            echo "✓ Sample data verification successful!"
           fi
 
