@@ -5,7 +5,15 @@ import Vehicles from './components/Vehicles';
 import Owners from './components/Owners';
 import ServiceRecords from './components/ServiceRecords';
 import Dashboard from './components/Dashboard';
-import Search from './components/Search';
+import Warranties from './components/Warranties';
+import Insurance from './components/Insurance';
+import Inspections from './components/Inspections';
+import Accidents from './components/Accidents';
+import Financing from './components/Financing';
+import Recalls from './components/Recalls';
+import FuelRecords from './components/FuelRecords';
+import Documents from './components/Documents';
+import Appraisals from './components/Appraisals';
 import { trackPageView } from './analytics';
 import './App.css';
 
@@ -50,10 +58,18 @@ function App() {
           <main className="App-main">
           <Routes>
             <Route path="/" element={<Dashboard />} />
-            <Route path="/search" element={<Search />} />
             <Route path="/vehicles" element={<Vehicles />} />
             <Route path="/owners" element={<Owners />} />
             <Route path="/service-records" element={<ServiceRecords />} />
+            <Route path="/warranties" element={<Warranties />} />
+            <Route path="/insurance" element={<Insurance />} />
+            <Route path="/inspections" element={<Inspections />} />
+            <Route path="/accidents" element={<Accidents />} />
+            <Route path="/financing" element={<Financing />} />
+            <Route path="/recalls" element={<Recalls />} />
+            <Route path="/fuel-records" element={<FuelRecords />} />
+            <Route path="/documents" element={<Documents />} />
+            <Route path="/appraisals" element={<Appraisals />} />
           </Routes>
           </main>
         </div>
