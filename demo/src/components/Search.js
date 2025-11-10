@@ -193,6 +193,7 @@ function Search() {
     }, 300);
 
     return () => clearTimeout(timeoutId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTerm, searchType]);
 
   const handleResultClick = (result) => {

@@ -127,16 +127,20 @@ function Accidents() {
                       </span>
                     </td>
                     <td>
-                      {accident.other_party_name || 'N/A'}
-                      {accident.other_party_vehicle_vin && (
-                        <br />
-                        <span style={{ fontSize: '12px', opacity: 0.7 }}>
-                          VIN: {accident.other_party_vehicle_vin}
-                        </span>
-                      )}
+                      <div>
+                        {accident.other_party_name || 'N/A'}
+                        {accident.other_party_vehicle_vin && (
+                          <>
+                            <br />
+                            <span style={{ fontSize: '12px', opacity: 0.7 }}>
+                              VIN: {accident.other_party_vehicle_vin}
+                            </span>
+                          </>
+                        )}
+                      </div>
                     </td>
                     <td>
-                      ${accident.damage_estimate ? parseFloat(accident.damage_estimate).toFixed(2) : '0.00'}
+                      {accident.damage_estimate ? '$' + parseFloat(accident.damage_estimate).toFixed(2) : '$0.00'}
                     </td>
                     <td>{accident.police_report_number || 'N/A'}</td>
                   </tr>

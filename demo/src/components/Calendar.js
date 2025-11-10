@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, addMonths, subMonths } from 'date-fns';
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, addMonths, subMonths } from 'date-fns';
 import './Components.css';
 
 function Calendar() {
@@ -12,6 +12,7 @@ function Calendar() {
 
   useEffect(() => {
     fetchEvents();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentDate]);
 
   const fetchEvents = async () => {

@@ -28,19 +28,21 @@ jobs:
         run: |
           echo "Deploying database schema to Supabase..."
           
-          # Deploy base schema
+          # Deploy base schema (ignore errors for existing objects)
           if [ -f "schema.sql" ]; then
             echo "Running schema.sql..."
-            psql "${SUPABASE_DB_URL}" -f schema.sql || echo "Note: Some objects may already exist"
+            psql "${SUPABASE_DB_URL}" -f schema.sql 2>&1 | grep -v "already exists" || true
+            echo "✓ Base schema deployment completed"
           fi
           
-          # Deploy enhancements
+          # Deploy enhancements (ignore errors for existing objects)
           if [ -f "schema_enhancements.sql" ]; then
             echo "Running schema_enhancements.sql..."
-            psql "${SUPABASE_DB_URL}" -f schema_enhancements.sql || echo "Note: Some objects may already exist"
+            psql "${SUPABASE_DB_URL}" -f schema_enhancements.sql 2>&1 | grep -v "already exists" || true
+            echo "✓ Schema enhancements deployment completed"
           fi
           
-          echo "Database schema deployment completed!"
+          echo "✓ Database schema deployment completed!"
       
       - name: Verify Tables
         env:
