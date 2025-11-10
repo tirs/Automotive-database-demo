@@ -53,7 +53,7 @@ function Dashboard() {
   if (loading) {
     return (
       <div className="glass-container">
-        <div className="loading">Loading dashboard</div>
+        <div className="loading">Loading dashboard...</div>
       </div>
     );
   }

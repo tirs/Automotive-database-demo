@@ -1,5 +1,5 @@
 [build]
-  command = "npm run build"
+  command = "PUBLIC_URL= npm run build"
   publish = "build"
 
 [[redirects]]
@@ -9,6 +9,8 @@
 
 [build.environment]
   NODE_VERSION = "18"
+  # PUBLIC_URL must be empty for Netlify root deployment
+  # This overrides the homepage field in package.json
   PUBLIC_URL = ""
   # Omit keys from secrets scanning (safe for frontend exposure)
   # Supabase anon key and GA Measurement ID are designed for client-side use

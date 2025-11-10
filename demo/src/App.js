@@ -24,36 +24,75 @@ function PageViewTracker() {
 }
 
 function App() {
-  // Use basename for GitHub Pages deployment only
-  // GitHub Pages uses subdirectory: /Automotive-database-demo
-  // Netlify serves from root, so basename should be empty
-  const getBasename = () => {
-    // Check if we're on GitHub Pages (has subdirectory in pathname)
-    if (window.location.pathname.startsWith('/Automotive-database-demo')) {
-      return '/Automotive-database-demo';
-    }
-    // For Netlify or other root deployments, use empty basename
-    return '';
-  };
-  
-  const basename = getBasename();
-  
-  return (
-    <Router basename={basename}>
-      <PageViewTracker />
-      <div className="App">
-        <Sidebar />
-        <main className="App-main">
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/vehicles" element={<Vehicles />} />
-            <Route path="/owners" element={<Owners />} />
-            <Route path="/service-records" element={<ServiceRecords />} />
-          </Routes>
-        </main>
+  try {
+    // Use basename for GitHub Pages deployment only
+    // GitHub Pages uses subdirectory: /Automotive-database-demo
+    // Netlify serves from root, so basename should be empty
+    const getBasename = () => {
+      // Check if we're on GitHub Pages (has subdirectory in pathname)
+      if (window.location.pathname.startsWith('/Automotive-database-demo')) {
+        return '/Automotive-database-demo';
+      }
+      // For Netlify or other root deployments, use empty basename
+      return '';
+    };
+    
+    const basename = getBasename();
+    
+    console.log('App component rendering with basename:', basename);
+    
+    return (
+      <Router basename={basename}>
+        <PageViewTracker />
+        <div className="App">
+          <Sidebar />
+          <main className="App-main">
+            <Routes>
+              <Route path="/" element={<Dashboard />} />
+              <Route path="/vehicles" element={<Vehicles />} />
+              <Route path="/owners" element={<Owners />} />
+              <Route path="/service-records" element={<ServiceRecords />} />
+            </Routes>
+          </main>
+        </div>
+      </Router>
+    );
+  } catch (error) {
+    console.error('Error in App component:', error);
+    return (
+      <div style={{ 
+        padding: '40px', 
+        color: '#fff', 
+        background: '#0a0e27', 
+        minHeight: '100vh',
+        fontFamily: 'system-ui'
+      }}>
+        <div style={{
+          background: 'rgba(20, 27, 45, 0.6)',
+          backdropFilter: 'blur(30px)',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          borderRadius: '20px',
+          padding: '32px',
+          maxWidth: '600px',
+          margin: '0 auto'
+        }}>
+          <h1 style={{ marginTop: 0 }}>Application Error</h1>
+          <p>An error occurred while loading the application.</p>
+          <pre style={{ 
+            background: '#141b2d', 
+            padding: '15px', 
+            borderRadius: '8px', 
+            overflow: 'auto',
+            fontSize: '12px',
+            marginTop: '20px'
+          }}>
+            {error.toString()}
+            {error.stack && '\n\n' + error.stack}
+          </pre>
+        </div>
       </div>
-    </Router>
-  );
+    );
+  }
 }
 
 export default App;
