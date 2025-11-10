@@ -423,8 +423,8 @@ The application is deployed on Netlify and includes:
 - No installation required!
 
 **Deployment Options:**
-- Netlify: `https://automotive-supabase-schema.netlify.app/` (Live)
-- Vercel: `https://your-project.vercel.app` (Alternative)
+- Netlify: [https://automotive-supabase-schema.netlify.app/](https://automotive-supabase-schema.netlify.app/) (Primary)
+- GitHub Pages: [https://tirs.github.io/Automotive-database-demo/](https://tirs.github.io/Automotive-database-demo/) (Secondary)
 
 ## Future Enhancements
 
