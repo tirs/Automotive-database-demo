@@ -13,7 +13,11 @@ function PageViewTracker() {
   const location = useLocation();
 
   useEffect(() => {
-    trackPageView(location.pathname + location.search);
+    try {
+      trackPageView(location.pathname + location.search);
+    } catch (error) {
+      console.warn('Failed to track page view:', error);
+    }
   }, [location]);
 
   return null;
