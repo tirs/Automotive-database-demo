@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
+import InspectionDetail from './InspectionDetail';
 import './Components.css';
 
 function Inspections() {
   const [inspections, setInspections] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedInspection, setSelectedInspection] = useState(null);
 
   useEffect(() => {
     fetchInspections();
@@ -41,6 +43,11 @@ function Inspections() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleInspectionUpdate = () => {
+    fetchInspections();
+    setSelectedInspection(null);
   };
 
   const isExpiringSoon = (expirationDate) => {
@@ -104,7 +111,11 @@ function Inspections() {
               </thead>
               <tbody>
                 {inspections.map((inspection) => (
-                  <tr key={inspection.id} className="clickable-row">
+                  <tr 
+                    key={inspection.id} 
+                    onClick={() => setSelectedInspection(inspection)}
+                    className="clickable-row"
+                  >
                     <td>
                       <strong>{inspection.vehicle?.vin}</strong>
                       <br />
@@ -121,10 +132,10 @@ function Inspections() {
                     <td>
                       {inspection.expiration_date ? new Date(inspection.expiration_date).toLocaleDateString() : 'N/A'}
                       {isExpiringSoon(inspection.expiration_date) && (
-                        <span style={{ color: '#ffa500', marginLeft: '8px' }}>⚠ Expiring Soon</span>
+                        <span style={{ color: 'rgba(255, 165, 0, 0.9)', marginLeft: '8px' }}>⚠ Expiring Soon</span>
                       )}
                       {isExpired(inspection.expiration_date) && (
-                        <span style={{ color: '#ff4444', marginLeft: '8px' }}>✗ Expired</span>
+                        <span style={{ color: 'rgba(255, 68, 68, 0.9)', marginLeft: '8px' }}>✗ Expired</span>
                       )}
                     </td>
                     <td>{inspection.mileage_at_inspection ? inspection.mileage_at_inspection.toLocaleString() : 'N/A'}</td>
@@ -153,6 +164,14 @@ function Inspections() {
           </div>
         )}
       </div>
+
+      {selectedInspection && (
+        <InspectionDetail 
+          inspection={selectedInspection} 
+          onClose={() => setSelectedInspection(null)}
+          onUpdate={handleInspectionUpdate}
+        />
+      )}
     </>
   );
 }

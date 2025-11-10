@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
+import AppraisalDetail from './AppraisalDetail';
 import './Components.css';
 
 function Appraisals() {
   const [appraisals, setAppraisals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedAppraisal, setSelectedAppraisal] = useState(null);
 
   useEffect(() => {
     fetchAppraisals();
@@ -41,6 +43,11 @@ function Appraisals() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleAppraisalUpdate = () => {
+    fetchAppraisals();
+    setSelectedAppraisal(null);
   };
 
   const getConditionBadge = (condition) => {
@@ -100,7 +107,11 @@ function Appraisals() {
               </thead>
               <tbody>
                 {appraisals.map((appraisal) => (
-                  <tr key={appraisal.id} className="clickable-row">
+                  <tr 
+                    key={appraisal.id} 
+                    onClick={() => setSelectedAppraisal(appraisal)}
+                    className="clickable-row"
+                  >
                     <td>
                       <strong>{appraisal.vehicle?.vin}</strong>
                       <br />
@@ -134,6 +145,14 @@ function Appraisals() {
           </div>
         )}
       </div>
+
+      {selectedAppraisal && (
+        <AppraisalDetail 
+          appraisal={selectedAppraisal} 
+          onClose={() => setSelectedAppraisal(null)}
+          onUpdate={handleAppraisalUpdate}
+        />
+      )}
     </>
   );
 }

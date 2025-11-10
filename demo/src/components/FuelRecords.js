@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
+import FuelRecordDetail from './FuelRecordDetail';
 import './Components.css';
 
 function FuelRecords() {
   const [fuelRecords, setFuelRecords] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedRecord, setSelectedRecord] = useState(null);
 
   useEffect(() => {
     fetchFuelRecords();
@@ -41,6 +43,11 @@ function FuelRecords() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleRecordUpdate = () => {
+    fetchFuelRecords();
+    setSelectedRecord(null);
   };
 
   const calculateMPG = (currentRecord, previousRecord) => {
@@ -101,7 +108,11 @@ function FuelRecords() {
                   const previousRecord = index < fuelRecords.length - 1 ? fuelRecords[index + 1] : null;
                   const mpg = calculateMPG(record, previousRecord);
                   return (
-                    <tr key={record.id} className="clickable-row">
+                    <tr 
+                      key={record.id} 
+                      onClick={() => setSelectedRecord(record)}
+                      className="clickable-row"
+                    >
                       <td>
                         <strong>{record.vehicle?.vin}</strong>
                         <br />
@@ -135,6 +146,14 @@ function FuelRecords() {
           </div>
         )}
       </div>
+
+      {selectedRecord && (
+        <FuelRecordDetail 
+          record={selectedRecord} 
+          onClose={() => setSelectedRecord(null)}
+          onUpdate={handleRecordUpdate}
+        />
+      )}
     </>
   );
 }

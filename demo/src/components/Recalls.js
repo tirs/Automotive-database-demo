@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
+import RecallDetail from './RecallDetail';
 import './Components.css';
 
 function Recalls() {
   const [recalls, setRecalls] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedRecall, setSelectedRecall] = useState(null);
 
   useEffect(() => {
     fetchRecalls();
@@ -40,6 +42,11 @@ function Recalls() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleRecallUpdate = () => {
+    fetchRecalls();
+    setSelectedRecall(null);
   };
 
   const getSeverityBadge = (severity) => {
@@ -108,7 +115,11 @@ function Recalls() {
               </thead>
               <tbody>
                 {recalls.map((recall) => (
-                  <tr key={recall.id} className="clickable-row">
+                  <tr 
+                    key={recall.id} 
+                    onClick={() => setSelectedRecall(recall)}
+                    className="clickable-row"
+                  >
                     <td><strong>{recall.recall_number}</strong></td>
                     <td>{recall.manufacturer?.name || recall.vehicle_model?.manufacturer?.name || 'N/A'}</td>
                     <td>{recall.vehicle_model?.name || 'All Models'}</td>
@@ -132,6 +143,14 @@ function Recalls() {
           </div>
         )}
       </div>
+
+      {selectedRecall && (
+        <RecallDetail 
+          recall={selectedRecall} 
+          onClose={() => setSelectedRecall(null)}
+          onUpdate={handleRecallUpdate}
+        />
+      )}
     </>
   );
 }

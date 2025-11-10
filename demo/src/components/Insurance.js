@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
+import InsuranceDetail from './InsuranceDetail';
 import './Components.css';
 
 function Insurance() {
   const [policies, setPolicies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedPolicy, setSelectedPolicy] = useState(null);
 
   useEffect(() => {
     fetchPolicies();
@@ -41,6 +43,11 @@ function Insurance() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handlePolicyUpdate = () => {
+    fetchPolicies();
+    setSelectedPolicy(null);
   };
 
   const isExpiringSoon = (endDate) => {
@@ -104,7 +111,11 @@ function Insurance() {
               </thead>
               <tbody>
                 {policies.map((policy) => (
-                  <tr key={policy.id} className="clickable-row">
+                  <tr 
+                    key={policy.id} 
+                    onClick={() => setSelectedPolicy(policy)}
+                    className="clickable-row"
+                  >
                     <td>
                       <strong>{policy.vehicle?.vin}</strong>
                       <br />
@@ -123,10 +134,10 @@ function Insurance() {
                     <td>
                       {policy.end_date ? new Date(policy.end_date).toLocaleDateString() : 'N/A'}
                       {isExpiringSoon(policy.end_date) && (
-                        <span style={{ color: '#ffa500', marginLeft: '8px' }}>⚠ Expiring Soon</span>
+                        <span style={{ color: 'rgba(255, 165, 0, 0.9)', marginLeft: '8px' }}>⚠ Expiring Soon</span>
                       )}
                       {isExpired(policy.end_date) && (
-                        <span style={{ color: '#ff4444', marginLeft: '8px' }}>✗ Expired</span>
+                        <span style={{ color: 'rgba(255, 68, 68, 0.9)', marginLeft: '8px' }}>✗ Expired</span>
                       )}
                     </td>
                     <td>${policy.premium_amount ? parseFloat(policy.premium_amount).toFixed(2) : '0.00'}</td>
@@ -147,6 +158,14 @@ function Insurance() {
           </div>
         )}
       </div>
+
+      {selectedPolicy && (
+        <InsuranceDetail 
+          policy={selectedPolicy} 
+          onClose={() => setSelectedPolicy(null)}
+          onUpdate={handlePolicyUpdate}
+        />
+      )}
     </>
   );
 }

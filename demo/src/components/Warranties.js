@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
+import WarrantyDetail from './WarrantyDetail';
 import './Components.css';
 
 function Warranties() {
   const [warranties, setWarranties] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedWarranty, setSelectedWarranty] = useState(null);
 
   useEffect(() => {
     fetchWarranties();
@@ -41,6 +43,11 @@ function Warranties() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleWarrantyUpdate = () => {
+    fetchWarranties();
+    setSelectedWarranty(null);
   };
 
   const getWarrantyTypeBadge = (type) => {
@@ -112,7 +119,11 @@ function Warranties() {
               </thead>
               <tbody>
                 {warranties.map((warranty) => (
-                  <tr key={warranty.id} className="clickable-row">
+                  <tr 
+                    key={warranty.id} 
+                    onClick={() => setSelectedWarranty(warranty)}
+                    className="clickable-row"
+                  >
                     <td>
                       <strong>{warranty.vehicle?.vin}</strong>
                       <br />
@@ -130,10 +141,10 @@ function Warranties() {
                     <td>
                       {warranty.end_date ? new Date(warranty.end_date).toLocaleDateString() : 'N/A'}
                       {isExpiringSoon(warranty.end_date) && (
-                        <span style={{ color: '#ffa500', marginLeft: '8px' }}>⚠ Expiring Soon</span>
+                        <span style={{ color: 'rgba(255, 165, 0, 0.9)', marginLeft: '8px' }}>⚠ Expiring Soon</span>
                       )}
                       {isExpired(warranty.end_date) && (
-                        <span style={{ color: '#ff4444', marginLeft: '8px' }}>✗ Expired</span>
+                        <span style={{ color: 'rgba(255, 68, 68, 0.9)', marginLeft: '8px' }}>✗ Expired</span>
                       )}
                     </td>
                     <td>{warranty.mileage_limit ? warranty.mileage_limit.toLocaleString() + ' miles' : 'N/A'}</td>
@@ -154,6 +165,14 @@ function Warranties() {
           </div>
         )}
       </div>
+
+      {selectedWarranty && (
+        <WarrantyDetail 
+          warranty={selectedWarranty} 
+          onClose={() => setSelectedWarranty(null)}
+          onUpdate={handleWarrantyUpdate}
+        />
+      )}
     </>
   );
 }

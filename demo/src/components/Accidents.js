@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
+import AccidentDetail from './AccidentDetail';
 import './Components.css';
 
 function Accidents() {
   const [accidents, setAccidents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedAccident, setSelectedAccident] = useState(null);
 
   useEffect(() => {
     fetchAccidents();
@@ -41,6 +43,11 @@ function Accidents() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleAccidentUpdate = () => {
+    fetchAccidents();
+    setSelectedAccident(null);
   };
 
   const getSeverityBadge = (severity) => {
@@ -100,7 +107,11 @@ function Accidents() {
               </thead>
               <tbody>
                 {accidents.map((accident) => (
-                  <tr key={accident.id} className="clickable-row">
+                  <tr 
+                    key={accident.id} 
+                    onClick={() => setSelectedAccident(accident)}
+                    className="clickable-row"
+                  >
                     <td>
                       <strong>{accident.vehicle?.vin}</strong>
                       <br />
@@ -150,6 +161,14 @@ function Accidents() {
           </div>
         )}
       </div>
+
+      {selectedAccident && (
+        <AccidentDetail 
+          accident={selectedAccident} 
+          onClose={() => setSelectedAccident(null)}
+          onUpdate={handleAccidentUpdate}
+        />
+      )}
     </>
   );
 }

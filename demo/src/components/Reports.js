@@ -189,7 +189,7 @@ function Reports() {
                 background: 'rgba(255, 255, 255, 0.05)',
                 border: '1px solid rgba(255, 255, 255, 0.1)',
                 borderRadius: '8px',
-                color: '#fff',
+                color: 'rgba(255, 255, 255, 0.9)',
                 fontSize: '16px'
               }}
             >
@@ -213,7 +213,7 @@ function Reports() {
                   background: 'rgba(255, 255, 255, 0.05)',
                   border: '1px solid rgba(255, 255, 255, 0.1)',
                   borderRadius: '8px',
-                  color: '#fff',
+                  color: 'rgba(255, 255, 255, 0.9)',
                   fontSize: '16px'
                 }}
               />
@@ -230,7 +230,7 @@ function Reports() {
                   background: 'rgba(255, 255, 255, 0.05)',
                   border: '1px solid rgba(255, 255, 255, 0.1)',
                   borderRadius: '8px',
-                  color: '#fff',
+                  color: 'rgba(255, 255, 255, 0.9)',
                   fontSize: '16px'
                 }}
               />
@@ -277,7 +277,7 @@ function Reports() {
                   background: 'rgba(255, 255, 255, 0.15)',
                   border: '1px solid rgba(255, 255, 255, 0.2)',
                   borderRadius: '8px',
-                  color: '#fff',
+                  color: 'rgba(255, 255, 255, 0.9)',
                   cursor: 'pointer',
                   fontWeight: 600
                 }}

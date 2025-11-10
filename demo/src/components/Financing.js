@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
+import FinancingDetail from './FinancingDetail';
 import './Components.css';
 
 function Financing() {
   const [financings, setFinancings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedFinancing, setSelectedFinancing] = useState(null);
 
   useEffect(() => {
     fetchFinancings();
@@ -41,6 +43,11 @@ function Financing() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleFinancingUpdate = () => {
+    fetchFinancings();
+    setSelectedFinancing(null);
   };
 
   const calculateProgress = (remaining, total) => {
@@ -102,7 +109,11 @@ function Financing() {
                     parseFloat(financing.loan_amount || 0)
                   );
                   return (
-                    <tr key={financing.id} className="clickable-row">
+                    <tr 
+                      key={financing.id} 
+                      onClick={() => setSelectedFinancing(financing)}
+                      className="clickable-row"
+                    >
                       <td>
                         <strong>{financing.vehicle?.vin}</strong>
                         <br />
@@ -141,6 +152,14 @@ function Financing() {
           </div>
         )}
       </div>
+
+      {selectedFinancing && (
+        <FinancingDetail 
+          financing={selectedFinancing} 
+          onClose={() => setSelectedFinancing(null)}
+          onUpdate={handleFinancingUpdate}
+        />
+      )}
     </>
   );
 }

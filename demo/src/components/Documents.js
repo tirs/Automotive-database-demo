@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
+import DocumentDetail from './DocumentDetail';
 import './Components.css';
 
 function Documents() {
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedDocument, setSelectedDocument] = useState(null);
 
   useEffect(() => {
     fetchDocuments();
@@ -41,6 +43,11 @@ function Documents() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDocumentUpdate = () => {
+    fetchDocuments();
+    setSelectedDocument(null);
   };
 
   const formatFileSize = (bytes) => {
@@ -110,7 +117,11 @@ function Documents() {
               </thead>
               <tbody>
                 {documents.map((doc) => (
-                  <tr key={doc.id} className="clickable-row">
+                  <tr 
+                    key={doc.id} 
+                    onClick={() => setSelectedDocument(doc)}
+                    className="clickable-row"
+                  >
                     <td>
                       <strong>{doc.vehicle?.vin}</strong>
                       <br />
@@ -136,10 +147,10 @@ function Documents() {
                     <td>
                       {doc.expiration_date ? new Date(doc.expiration_date).toLocaleDateString() : 'N/A'}
                       {isExpiringSoon(doc.expiration_date) && (
-                        <span style={{ color: '#ffa500', marginLeft: '8px' }}>⚠ Expiring Soon</span>
+                        <span style={{ color: 'rgba(255, 165, 0, 0.9)', marginLeft: '8px' }}>⚠ Expiring Soon</span>
                       )}
                       {isExpired(doc.expiration_date) && (
-                        <span style={{ color: '#ff4444', marginLeft: '8px' }}>✗ Expired</span>
+                        <span style={{ color: 'rgba(255, 68, 68, 0.9)', marginLeft: '8px' }}>✗ Expired</span>
                       )}
                     </td>
                     <td>{formatFileSize(doc.file_size)}</td>
@@ -160,6 +171,14 @@ function Documents() {
           </div>
         )}
       </div>
+
+      {selectedDocument && (
+        <DocumentDetail 
+          document={selectedDocument} 
+          onClose={() => setSelectedDocument(null)}
+          onUpdate={handleDocumentUpdate}
+        />
+      )}
     </>
   );
 }
