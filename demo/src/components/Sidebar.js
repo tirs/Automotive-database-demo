@@ -12,10 +12,6 @@ function Sidebar() {
       exact: true
     },
     {
-      path: '/search',
-      label: 'Search'
-    },
-    {
       path: '/vehicles',
       label: 'Vehicles'
     },
@@ -26,6 +22,42 @@ function Sidebar() {
     {
       path: '/service-records',
       label: 'Service Records'
+    },
+    {
+      path: '/warranties',
+      label: 'Warranties'
+    },
+    {
+      path: '/insurance',
+      label: 'Insurance'
+    },
+    {
+      path: '/inspections',
+      label: 'Inspections'
+    },
+    {
+      path: '/accidents',
+      label: 'Accidents'
+    },
+    {
+      path: '/financing',
+      label: 'Financing'
+    },
+    {
+      path: '/recalls',
+      label: 'Recalls'
+    },
+    {
+      path: '/fuel-records',
+      label: 'Fuel Records'
+    },
+    {
+      path: '/documents',
+      label: 'Documents'
+    },
+    {
+      path: '/appraisals',
+      label: 'Appraisals'
     }
   ];
 
