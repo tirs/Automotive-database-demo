@@ -1,0 +1,286 @@
+// Enhanced Automotive Database ERD
+// Additional tables for enriched functionality
+// Import this into dbdiagram.io along with the base erd.dbml
+
+// ============================================================================
+// WARRANTY MANAGEMENT
+// ============================================================================
+
+Table warranty {
+  id uuid [primary key]
+  vehicle_id uuid [not null, ref: > vehicle.id]
+  warranty_type varchar(50) [not null]
+  provider_name varchar(200)
+  start_date date [not null]
+  end_date date
+  mileage_limit integer
+  coverage_description text
+  claim_count integer [default: 0]
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamptz [default: `CURRENT_TIMESTAMP`]
+}
+
+Table warranty_claim {
+  id uuid [primary key]
+  warranty_id uuid [not null, ref: > warranty.id]
+  service_record_id uuid [ref: > service_record.id]
+  claim_date date [not null]
+  claim_amount decimal(12,2)
+  claim_status varchar(50) [default: 'pending']
+  description text
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamptz [default: `CURRENT_TIMESTAMP`]
+}
+
+// ============================================================================
+// INSURANCE MANAGEMENT
+// ============================================================================
+
+Table insurance_policy {
+  id uuid [primary key]
+  vehicle_id uuid [not null, ref: > vehicle.id]
+  insurance_company varchar(200) [not null]
+  policy_number varchar(100) [not null]
+  policy_type varchar(50)
+  start_date date [not null]
+  end_date date [not null]
+  premium_amount decimal(12,2)
+  deductible decimal(12,2)
+  coverage_limits jsonb
+  agent_name varchar(200)
+  agent_phone varchar(20)
+  agent_email varchar(255)
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamptz [default: `CURRENT_TIMESTAMP`]
+}
+
+Table insurance_claim {
+  id uuid [primary key]
+  insurance_policy_id uuid [not null, ref: > insurance_policy.id]
+  vehicle_id uuid [not null, ref: > vehicle.id]
+  claim_date date [not null]
+  claim_number varchar(100)
+  incident_type varchar(100)
+  claim_amount decimal(12,2)
+  claim_status varchar(50) [default: 'filed']
+  description text
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamptz [default: `CURRENT_TIMESTAMP`]
+}
+
+// ============================================================================
+// VEHICLE INSPECTIONS
+// ============================================================================
+
+Table inspection {
+  id uuid [primary key]
+  vehicle_id uuid [not null, ref: > vehicle.id]
+  inspection_type varchar(50) [not null]
+  inspection_date date [not null]
+  expiration_date date
+  mileage_at_inspection integer
+  inspector_name varchar(200)
+  inspection_station varchar(200)
+  passed boolean [not null]
+  notes text
+  certificate_number varchar(100)
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamptz [default: `CURRENT_TIMESTAMP`]
+}
+
+// ============================================================================
+// ACCIDENTS & DAMAGE
+// ============================================================================
+
+Table accident {
+  id uuid [primary key]
+  vehicle_id uuid [not null, ref: > vehicle.id]
+  accident_date timestamptz [not null]
+  location varchar(500)
+  accident_type varchar(100)
+  severity varchar(50)
+  description text
+  other_party_vehicle_vin varchar(17)
+  other_party_name varchar(200)
+  other_party_insurance varchar(200)
+  other_party_phone varchar(20)
+  police_report_number varchar(100)
+  damage_estimate decimal(12,2)
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamptz [default: `CURRENT_TIMESTAMP`]
+}
+
+Table damage_record {
+  id uuid [primary key]
+  accident_id uuid [ref: > accident.id]
+  vehicle_id uuid [not null, ref: > vehicle.id]
+  damage_location varchar(200)
+  damage_type varchar(100)
+  severity varchar(50)
+  repair_cost decimal(12,2)
+  repair_date date
+  repair_shop varchar(200)
+  before_photo_url varchar(500)
+  after_photo_url varchar(500)
+  notes text
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamptz [default: `CURRENT_TIMESTAMP`]
+}
+
+// ============================================================================
+// FINANCING & LOANS
+// ============================================================================
+
+Table financing {
+  id uuid [primary key]
+  vehicle_id uuid [not null, ref: > vehicle.id]
+  financing_type varchar(50) [not null]
+  lender_name varchar(200)
+  account_number varchar(100)
+  loan_amount decimal(12,2)
+  interest_rate decimal(5,2)
+  monthly_payment decimal(12,2)
+  start_date date [not null]
+  end_date date
+  remaining_balance decimal(12,2)
+  payment_frequency varchar(20) [default: 'monthly']
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamptz [default: `CURRENT_TIMESTAMP`]
+}
+
+Table payment {
+  id uuid [primary key]
+  financing_id uuid [not null, ref: > financing.id]
+  payment_date date [not null]
+  payment_amount decimal(12,2) [not null]
+  payment_method varchar(50)
+  payment_status varchar(50) [default: 'pending']
+  due_date date
+  late_fee decimal(12,2)
+  notes text
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamptz [default: `CURRENT_TIMESTAMP`]
+}
+
+// ============================================================================
+// LOCATION & GPS TRACKING
+// ============================================================================
+
+Table vehicle_location {
+  id uuid [primary key]
+  vehicle_id uuid [not null, ref: > vehicle.id]
+  latitude decimal(10,8)
+  longitude decimal(11,8)
+  address varchar(500)
+  recorded_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  location_type varchar(50) [default: 'current']
+}
+
+Table trip {
+  id uuid [primary key]
+  vehicle_id uuid [not null, ref: > vehicle.id]
+  start_location varchar(500)
+  end_location varchar(500)
+  start_time timestamptz [not null]
+  end_time timestamptz
+  distance_miles decimal(10,2)
+  fuel_consumed decimal(10,2)
+  purpose varchar(100)
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+}
+
+// ============================================================================
+// RECALLS & SAFETY
+// ============================================================================
+
+Table recall {
+  id uuid [primary key]
+  vehicle_model_id uuid [ref: > vehicle_model.id]
+  manufacturer_id uuid [ref: > manufacturer.id]
+  recall_number varchar(100) [not null]
+  recall_date date [not null]
+  title varchar(500) [not null]
+  description text
+  affected_year_range varchar(50)
+  affected_vin_range varchar(200)
+  severity varchar(50) [default: 'medium']
+  remedy_description text
+  status varchar(50) [default: 'open']
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamptz [default: `CURRENT_TIMESTAMP`]
+}
+
+Table vehicle_recall_status {
+  id uuid [primary key]
+  vehicle_id uuid [not null, ref: > vehicle.id]
+  recall_id uuid [not null, ref: > recall.id]
+  status varchar(50) [default: 'notified']
+  notification_date date
+  service_date date
+  completion_date date
+  notes text
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  
+  Indexes {
+    (vehicle_id, recall_id) [unique]
+  }
+}
+
+// ============================================================================
+// FUEL & MAINTENANCE
+// ============================================================================
+
+Table fuel_record {
+  id uuid [primary key]
+  vehicle_id uuid [not null, ref: > vehicle.id]
+  fuel_date date [not null]
+  fuel_type varchar(50) [default: 'gasoline']
+  gallons decimal(10,3)
+  cost_per_gallon decimal(10,2)
+  total_cost decimal(12,2)
+  odometer_reading integer
+  gas_station varchar(200)
+  location varchar(500)
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamptz [default: `CURRENT_TIMESTAMP`]
+}
+
+// ============================================================================
+// DOCUMENTS
+// ============================================================================
+
+Table vehicle_document {
+  id uuid [primary key]
+  vehicle_id uuid [not null, ref: > vehicle.id]
+  document_type varchar(100) [not null]
+  document_name varchar(200) [not null]
+  file_url varchar(500)
+  file_size integer
+  mime_type varchar(100)
+  issue_date date
+  expiration_date date
+  notes text
+  uploaded_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  uploaded_by varchar(200)
+}
+
+// ============================================================================
+// APPRAISALS & VALUATION
+// ============================================================================
+
+Table vehicle_appraisal {
+  id uuid [primary key]
+  vehicle_id uuid [not null, ref: > vehicle.id]
+  appraisal_date date [not null]
+  appraised_value decimal(12,2) [not null]
+  appraisal_type varchar(50)
+  appraiser_name varchar(200)
+  appraiser_company varchar(200)
+  condition_rating varchar(50)
+  mileage_at_appraisal integer
+  notes text
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamptz [default: `CURRENT_TIMESTAMP`]
+}
+
