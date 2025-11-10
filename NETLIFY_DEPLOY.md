@@ -185,6 +185,31 @@ Once deployment completes:
    - `REACT_APP_SUPABASE_ANON_KEY`
 3. Click **"Trigger deploy"** > **"Clear cache and deploy site"**
 
+### Secrets Scanning Error
+
+**Issue: "Secrets scanning found secrets in build"**
+- Netlify detects Supabase keys in the compiled JavaScript
+- This is **expected** - React bundles `REACT_APP_*` variables into the build
+- The anon key is **safe to expose** (designed for frontend use)
+
+**Solution:**
+The `netlify.toml` file is already configured to omit these keys from scanning:
+```toml
+SECRETS_SCAN_OMIT_KEYS = "REACT_APP_SUPABASE_URL,REACT_APP_SUPABASE_ANON_KEY"
+```
+
+If you still see the error:
+1. Make sure `demo/netlify.toml` has the `SECRETS_SCAN_OMIT_KEYS` setting
+2. Push the updated `netlify.toml` to GitHub
+3. Redeploy on Netlify
+
+**Alternative:** Add in Netlify UI:
+1. Go to **Site settings** > **Environment variables**
+2. Add: `SECRETS_SCAN_OMIT_KEYS` = `REACT_APP_SUPABASE_URL,REACT_APP_SUPABASE_ANON_KEY`
+3. Redeploy
+
+**Note:** The Supabase anon key is safe to expose in frontend code. It's protected by Row Level Security (RLS) policies in Supabase.
+
 ---
 
 ## Netlify Configuration Files

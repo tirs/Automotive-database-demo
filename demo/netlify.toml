@@ -9,4 +9,6 @@
 
 [build.environment]
   NODE_VERSION = "18"
+  # Omit Supabase keys from secrets scanning (safe for frontend)
+  SECRETS_SCAN_OMIT_KEYS = "REACT_APP_SUPABASE_URL,REACT_APP_SUPABASE_ANON_KEY"
 
