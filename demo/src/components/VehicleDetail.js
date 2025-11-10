@@ -43,6 +43,10 @@ function VehicleDetail({ vehicle, onClose, onUpdate }) {
       setLoading(true);
       setError(null);
 
+      if (!supabase) {
+        throw new Error('Supabase client not initialized. Please check environment variables.');
+      }
+
       const { error: updateError } = await supabase
         .from('vehicle')
         .update({

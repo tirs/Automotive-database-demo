@@ -61,7 +61,23 @@ function Dashboard() {
   if (error) {
     return (
       <div className="glass-container">
-        <div className="error">Error: {error}</div>
+        <div className="error">
+          <h3>Error Loading Dashboard</h3>
+          <p>{error}</p>
+          {error.includes('environment variables') && (
+            <div style={{ marginTop: '20px', padding: '15px', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '8px' }}>
+              <p><strong>Missing Environment Variables</strong></p>
+              <p>Please set the following in Netlify:</p>
+              <ul style={{ marginTop: '10px', paddingLeft: '20px' }}>
+                <li>REACT_APP_SUPABASE_URL</li>
+                <li>REACT_APP_SUPABASE_ANON_KEY</li>
+              </ul>
+              <p style={{ marginTop: '10px', fontSize: '14px', opacity: 0.8 }}>
+                Go to: Netlify Dashboard → Site Settings → Environment Variables
+              </p>
+            </div>
+          )}
+        </div>
       </div>
     );
   }
