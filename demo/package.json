@@ -2,6 +2,7 @@
   "name": "automotive-database-demo",
   "version": "1.0.0",
   "description": "React demo application for Automotive Database Schema",
+  "homepage": "https://tirs.github.io/Automotive-database-demo",
   "private": true,
   "dependencies": {
     "@supabase/supabase-js": "^2.38.4",

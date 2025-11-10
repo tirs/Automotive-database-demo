@@ -8,8 +8,11 @@ import Dashboard from './components/Dashboard';
 import './App.css';
 
 function App() {
+  // Use basename for GitHub Pages deployment
+  const basename = process.env.PUBLIC_URL || '';
+  
   return (
-    <Router>
+    <Router basename={basename}>
       <div className="App">
         <Sidebar />
         <main className="App-main">
