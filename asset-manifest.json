@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/Automotive-database-demo/static/css/main.95de5f2c.css",
-    "main.js": "/Automotive-database-demo/static/js/main.3bbbba5f.js",
+    "main.js": "/Automotive-database-demo/static/js/main.80236cb0.js",
     "index.html": "/Automotive-database-demo/index.html",
     "main.95de5f2c.css.map": "/Automotive-database-demo/static/css/main.95de5f2c.css.map",
-    "main.3bbbba5f.js.map": "/Automotive-database-demo/static/js/main.3bbbba5f.js.map"
+    "main.80236cb0.js.map": "/Automotive-database-demo/static/js/main.80236cb0.js.map"
   },
   "entrypoints": [
     "static/css/main.95de5f2c.css",
-    "static/js/main.3bbbba5f.js"
+    "static/js/main.80236cb0.js"
   ]
 }
