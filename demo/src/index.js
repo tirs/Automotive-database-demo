@@ -4,14 +4,8 @@ import './index.css';
 import App from './App';
 import { initGA } from './analytics';
 
-// Initialize Google Analytics if measurement ID is provided
-try {
-  if (process.env.REACT_APP_GA_MEASUREMENT_ID) {
-    initGA(process.env.REACT_APP_GA_MEASUREMENT_ID);
-  }
-} catch (error) {
-  console.warn('Failed to initialize Google Analytics:', error);
-}
+// Google Analytics is initialized via script tag in index.html
+// No need to initialize here as it's already loaded
 
 // Error boundary for rendering
 const root = ReactDOM.createRoot(document.getElementById('root'));

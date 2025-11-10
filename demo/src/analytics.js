@@ -28,7 +28,9 @@ export const initGA = (measurementId) => {
 
 export const trackPageView = (path) => {
   if (typeof window !== 'undefined' && window.gtag) {
-    window.gtag('config', process.env.REACT_APP_GA_MEASUREMENT_ID, {
+    // Use the Measurement ID from the script tag or environment variable
+    const measurementId = 'G-MP3D4D91GB' || process.env.REACT_APP_GA_MEASUREMENT_ID;
+    window.gtag('config', measurementId, {
       page_path: path,
     });
   }
