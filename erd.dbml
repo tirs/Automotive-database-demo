@@ -1,0 +1,137 @@
+// Automotive Database ERD
+// This file can be imported into dbdiagram.io to visualize the database schema
+
+Table manufacturer {
+  id uuid [primary key]
+  name varchar(100) [not null, unique]
+  country varchar(100)
+  founded_year integer
+  headquarters varchar(200)
+  website varchar(255)
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamptz [default: `CURRENT_TIMESTAMP`]
+}
+
+Table vehicle_model {
+  id uuid [primary key]
+  manufacturer_id uuid [not null, ref: > manufacturer.id]
+  name varchar(100) [not null]
+  year_start integer
+  year_end integer
+  vehicle_type varchar(50)
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  
+  Indexes {
+    (manufacturer_id, name, year_start) [unique]
+  }
+}
+
+Table owner {
+  id uuid [primary key]
+  first_name varchar(100) [not null]
+  last_name varchar(100) [not null]
+  email varchar(255) [unique]
+  phone varchar(20)
+  address_line1 varchar(200)
+  address_line2 varchar(200)
+  city varchar(100)
+  state varchar(50)
+  postal_code varchar(20)
+  country varchar(100) [default: 'USA']
+  owner_type varchar(20) [not null, default: 'individual']
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamptz [default: `CURRENT_TIMESTAMP`]
+}
+
+Table vehicle {
+  id uuid [primary key]
+  vin varchar(17) [not null, unique]
+  vehicle_model_id uuid [not null, ref: > vehicle_model.id]
+  owner_id uuid [not null, ref: > owner.id]
+  year integer [not null]
+  color varchar(50)
+  mileage integer [default: 0]
+  license_plate varchar(20)
+  registration_state varchar(50)
+  purchase_date date
+  purchase_price decimal(12,2)
+  current_value decimal(12,2)
+  status varchar(20) [default: 'active']
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamptz [default: `CURRENT_TIMESTAMP`]
+}
+
+Table service_center {
+  id uuid [primary key]
+  name varchar(200) [not null]
+  address_line1 varchar(200)
+  address_line2 varchar(200)
+  city varchar(100)
+  state varchar(50)
+  postal_code varchar(20)
+  country varchar(100) [default: 'USA']
+  phone varchar(20)
+  email varchar(255)
+  website varchar(255)
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamptz [default: `CURRENT_TIMESTAMP`]
+}
+
+Table technician {
+  id uuid [primary key]
+  service_center_id uuid [ref: > service_center.id]
+  first_name varchar(100) [not null]
+  last_name varchar(100) [not null]
+  email varchar(255) [unique]
+  phone varchar(20)
+  certification_level varchar(50)
+  hire_date date
+  status varchar(20) [default: 'active']
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamptz [default: `CURRENT_TIMESTAMP`]
+}
+
+Table service_record {
+  id uuid [primary key]
+  vehicle_id uuid [not null, ref: > vehicle.id]
+  service_center_id uuid [ref: > service_center.id]
+  technician_id uuid [ref: > technician.id]
+  service_date date [not null]
+  service_type varchar(50) [not null]
+  description text
+  mileage_at_service integer
+  labor_cost decimal(10,2) [default: 0]
+  total_cost decimal(10,2) [default: 0]
+  warranty_covered boolean [default: false]
+  next_service_due_date date
+  next_service_due_mileage integer
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamptz [default: `CURRENT_TIMESTAMP`]
+}
+
+Table part {
+  id uuid [primary key]
+  part_number varchar(100) [not null, unique]
+  name varchar(200) [not null]
+  description text
+  manufacturer_name varchar(100)
+  category varchar(50)
+  unit_price decimal(10,2)
+  created_at timestamptz [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamptz [default: `CURRENT_TIMESTAMP`]
+}
+
+Table service_part {
+  id uuid [primary key]
+  service_record_id uuid [not null, ref: > service_record.id]
+  part_id uuid [not null, ref: > part.id]
+  quantity integer [not null, default: 1]
+  unit_price decimal(10,2) [not null]
+  total_price decimal(10,2)
+  
+  Indexes {
+    (service_record_id, part_id) [unique]
+  }
+}
+
