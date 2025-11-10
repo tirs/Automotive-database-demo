@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
+import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import './Components.css';
 
 function Dashboard() {
@@ -206,6 +207,57 @@ function Dashboard() {
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="glass-container">
+        <h2 className="section-title">Analytics & Charts</h2>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '24px', marginBottom: '32px' }}>
+          <div>
+            <h3 style={{ marginBottom: '16px', fontSize: '18px' }}>Service Revenue Trend</h3>
+            <ResponsiveContainer width="100%" height={200}>
+              <LineChart data={[
+                { month: 'Jan', revenue: 1200 },
+                { month: 'Feb', revenue: 1500 },
+                { month: 'Mar', revenue: 1800 },
+                { month: 'Apr', revenue: 1400 },
+                { month: 'May', revenue: 2000 },
+                { month: 'Jun', revenue: 2200 }
+              ]}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)" />
+                <XAxis dataKey="month" stroke="rgba(255, 255, 255, 0.7)" />
+                <YAxis stroke="rgba(255, 255, 255, 0.7)" />
+                <Tooltip contentStyle={{ background: 'rgba(20, 27, 45, 0.95)', border: '1px solid rgba(255, 255, 255, 0.2)', borderRadius: '8px' }} />
+                <Line type="monotone" dataKey="revenue" stroke="rgba(255, 255, 255, 0.8)" strokeWidth={2} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+          <div>
+            <h3 style={{ marginBottom: '16px', fontSize: '18px' }}>Vehicle Status Distribution</h3>
+            <ResponsiveContainer width="100%" height={200}>
+              <PieChart>
+                <Pie
+                  data={[
+                    { name: 'Active', value: stats.totalVehicles * 0.8 },
+                    { name: 'Sold', value: stats.totalVehicles * 0.15 },
+                    { name: 'Other', value: stats.totalVehicles * 0.05 }
+                  ]}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  outerRadius={60}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  <Cell fill="rgba(255, 255, 255, 0.6)" />
+                  <Cell fill="rgba(255, 255, 255, 0.4)" />
+                  <Cell fill="rgba(255, 255, 255, 0.2)" />
+                </Pie>
+                <Tooltip contentStyle={{ background: 'rgba(20, 27, 45, 0.95)', border: '1px solid rgba(255, 255, 255, 0.2)', borderRadius: '8px' }} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
       </div>
 
       <div className="glass-container">

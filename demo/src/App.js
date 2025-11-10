@@ -14,6 +14,11 @@ import Recalls from './components/Recalls';
 import FuelRecords from './components/FuelRecords';
 import Documents from './components/Documents';
 import Appraisals from './components/Appraisals';
+import Search from './components/Search';
+import Notifications from './components/Notifications';
+import Calendar from './components/Calendar';
+import BulkOperations from './components/BulkOperations';
+import Reports from './components/Reports';
 import { trackPageView } from './analytics';
 import './App.css';
 
@@ -58,6 +63,9 @@ function App() {
           <main className="App-main">
           <Routes>
             <Route path="/" element={<Dashboard />} />
+            <Route path="/search" element={<Search />} />
+            <Route path="/notifications" element={<Notifications />} />
+            <Route path="/calendar" element={<Calendar />} />
             <Route path="/vehicles" element={<Vehicles />} />
             <Route path="/owners" element={<Owners />} />
             <Route path="/service-records" element={<ServiceRecords />} />
@@ -70,6 +78,8 @@ function App() {
             <Route path="/fuel-records" element={<FuelRecords />} />
             <Route path="/documents" element={<Documents />} />
             <Route path="/appraisals" element={<Appraisals />} />
+            <Route path="/bulk-operations" element={<BulkOperations />} />
+            <Route path="/reports" element={<Reports />} />
           </Routes>
           </main>
         </div>

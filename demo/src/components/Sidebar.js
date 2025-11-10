@@ -12,6 +12,18 @@ function Sidebar() {
       exact: true
     },
     {
+      path: '/search',
+      label: 'Search'
+    },
+    {
+      path: '/notifications',
+      label: 'Notifications'
+    },
+    {
+      path: '/calendar',
+      label: 'Calendar'
+    },
+    {
       path: '/vehicles',
       label: 'Vehicles'
     },
@@ -58,6 +70,14 @@ function Sidebar() {
     {
       path: '/appraisals',
       label: 'Appraisals'
+    },
+    {
+      path: '/bulk-operations',
+      label: 'Bulk Operations'
+    },
+    {
+      path: '/reports',
+      label: 'Reports'
     }
   ];
 
