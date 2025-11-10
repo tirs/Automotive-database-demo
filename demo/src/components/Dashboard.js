@@ -58,6 +58,10 @@ function Dashboard() {
     );
   }
 
+  // Detect deployment platform
+  const isGitHubPages = window.location.pathname.startsWith('/Automotive-database-demo');
+  const isNetlify = window.location.hostname.includes('netlify.app') || window.location.hostname.includes('netlify.com');
+
   if (error) {
     return (
       <div className="glass-container">
@@ -67,14 +71,42 @@ function Dashboard() {
           {error.includes('environment variables') && (
             <div style={{ marginTop: '20px', padding: '15px', background: 'rgba(255, 255, 255, 0.05)', borderRadius: '8px' }}>
               <p><strong>Missing Environment Variables</strong></p>
-              <p>Please set the following in Netlify:</p>
+              <p>Please set the following environment variables:</p>
               <ul style={{ marginTop: '10px', paddingLeft: '20px' }}>
                 <li>REACT_APP_SUPABASE_URL</li>
                 <li>REACT_APP_SUPABASE_ANON_KEY</li>
               </ul>
-              <p style={{ marginTop: '10px', fontSize: '14px', opacity: 0.8 }}>
-                Go to: Netlify Dashboard → Site Settings → Environment Variables
-              </p>
+              {isGitHubPages && (
+                <div style={{ marginTop: '15px', padding: '12px', background: 'rgba(255, 255, 255, 0.03)', borderRadius: '8px' }}>
+                  <p style={{ margin: '0 0 8px 0', fontWeight: 600 }}>For GitHub Pages:</p>
+                  <ol style={{ margin: '0', paddingLeft: '20px', fontSize: '14px', lineHeight: '1.8' }}>
+                    <li>Go to your GitHub repository</li>
+                    <li>Click <strong>Settings</strong> → <strong>Secrets and variables</strong> → <strong>Actions</strong></li>
+                    <li>Add the following secrets:
+                      <ul style={{ marginTop: '5px', paddingLeft: '20px' }}>
+                        <li><code>REACT_APP_SUPABASE_URL</code></li>
+                        <li><code>REACT_APP_SUPABASE_ANON_KEY</code></li>
+                      </ul>
+                    </li>
+                    <li>Push a new commit to trigger a rebuild</li>
+                  </ol>
+                </div>
+              )}
+              {isNetlify && (
+                <div style={{ marginTop: '15px', padding: '12px', background: 'rgba(255, 255, 255, 0.03)', borderRadius: '8px' }}>
+                  <p style={{ margin: '0 0 8px 0', fontWeight: 600 }}>For Netlify:</p>
+                  <p style={{ margin: '0', fontSize: '14px', lineHeight: '1.8' }}>
+                    Go to: <strong>Netlify Dashboard</strong> → <strong>Site Settings</strong> → <strong>Environment Variables</strong>
+                  </p>
+                </div>
+              )}
+              {!isGitHubPages && !isNetlify && (
+                <div style={{ marginTop: '15px', padding: '12px', background: 'rgba(255, 255, 255, 0.03)', borderRadius: '8px' }}>
+                  <p style={{ margin: '0', fontSize: '14px', lineHeight: '1.8' }}>
+                    Set these as environment variables in your deployment platform's settings.
+                  </p>
+                </div>
+              )}
             </div>
           )}
         </div>
