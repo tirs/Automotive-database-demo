@@ -12,6 +12,10 @@ function Sidebar() {
       exact: true
     },
     {
+      path: '/search',
+      label: 'Search'
+    },
+    {
       path: '/vehicles',
       label: 'Vehicles'
     },

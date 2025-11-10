@@ -5,6 +5,7 @@ import Vehicles from './components/Vehicles';
 import Owners from './components/Owners';
 import ServiceRecords from './components/ServiceRecords';
 import Dashboard from './components/Dashboard';
+import Search from './components/Search';
 import { trackPageView } from './analytics';
 import './App.css';
 
@@ -47,12 +48,13 @@ function App() {
         <div className="App">
           <Sidebar />
           <main className="App-main">
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/vehicles" element={<Vehicles />} />
-              <Route path="/owners" element={<Owners />} />
-              <Route path="/service-records" element={<ServiceRecords />} />
-            </Routes>
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/search" element={<Search />} />
+            <Route path="/vehicles" element={<Vehicles />} />
+            <Route path="/owners" element={<Owners />} />
+            <Route path="/service-records" element={<ServiceRecords />} />
+          </Routes>
           </main>
         </div>
       </Router>
