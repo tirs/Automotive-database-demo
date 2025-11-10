@@ -1,19 +1,16 @@
-name: Deploy Database to Supabase (Simple)
+name: Deploy Complete Database (Schema + Data)
 
 on:
-  push:
-    branches:
-      - main
-    paths:
-      - 'schema.sql'
-      - 'schema_enhancements.sql'
-      - 'sample_data.sql'
-      - 'sample_data_enhancements.sql'
-  workflow_dispatch: # Allow manual triggering
+  workflow_dispatch: # Manual trigger only
     inputs:
-      include_sample_data:
-        description: 'Include sample data?'
-        required: false
+      deploy_schema:
+        description: 'Deploy schema files?'
+        required: true
+        default: 'true'
+        type: boolean
+      deploy_sample_data:
+        description: 'Deploy sample data files?'
+        required: true
         default: 'true'
         type: boolean
 
@@ -31,6 +28,7 @@ jobs:
           sudo apt-get install -y postgresql-client
       
       - name: Deploy Database Schema
+        if: ${{ github.event.inputs.deploy_schema == 'true' }}
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: |
@@ -53,7 +51,7 @@ jobs:
           echo "✓ Database schema deployment completed!"
       
       - name: Deploy Sample Data
-        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.include_sample_data == 'true' || github.event_name == 'push' && (contains(github.event.head_commit.message, '[deploy-data]') || contains(github.event.head_commit.message, 'sample_data')) }}
+        if: ${{ github.event.inputs.deploy_sample_data == 'true' }}
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: |
@@ -75,24 +73,46 @@ jobs:
           
           echo "✓ Sample data deployment completed!"
       
-      - name: Verify Tables
+      - name: Verify Deployment
         env:
           SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
         run: |
-          echo "Verifying database tables..."
+          echo "Verifying database deployment..."
           
-          TABLE_LIST=$(psql "${SUPABASE_DB_URL}" -t -c "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE' ORDER BY table_name;")
+          # Count tables
+          TABLE_COUNT=$(psql "${SUPABASE_DB_URL}" -t -A -c "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE';")
           
+          echo "Total tables created: $TABLE_COUNT"
+          
+          # List all tables
+          echo ""
           echo "Tables in database:"
-          echo "$TABLE_LIST"
+          psql "${SUPABASE_DB_URL}" -t -c "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE' ORDER BY table_name;"
           
-          TABLE_COUNT=$(psql "${SUPABASE_DB_URL}" -t -c "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_type = 'BASE TABLE';")
+          # Count records in key tables
+          echo ""
+          echo "Record counts:"
+          psql "${SUPABASE_DB_URL}" -t -c "
+            SELECT 'vehicle' as table_name, COUNT(*) as count FROM vehicle
+            UNION ALL
+            SELECT 'owner', COUNT(*) FROM owner
+            UNION ALL
+            SELECT 'service_record', COUNT(*) FROM service_record
+            UNION ALL
+            SELECT 'warranty', COUNT(*) FROM warranty
+            UNION ALL
+            SELECT 'accident', COUNT(*) FROM accident
+            ORDER BY table_name;
+          " || echo "Note: Some tables may not have data yet"
           
-          echo "Total tables: $TABLE_COUNT"
-          
-          if [ "$TABLE_COUNT" -lt 15 ]; then
-            echo "Warning: Expected at least 15 tables. Current count: $TABLE_COUNT"
+          if [ "$TABLE_COUNT" -ge 15 ]; then
+            echo ""
+            echo "✓ Database deployment verified successfully!"
+            echo "Expected tables: 19 (9 base + 10 enhancements)"
+            echo "Found tables: $TABLE_COUNT"
           else
-            echo "✓ Database verification successful!"
+            echo ""
+            echo "⚠ Warning: Expected at least 15 tables, found $TABLE_COUNT"
+            echo "Some tables may not have been created. Check the logs above."
           fi
 
