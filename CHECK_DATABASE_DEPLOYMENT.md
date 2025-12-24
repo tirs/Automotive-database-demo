@@ -11,9 +11,9 @@
 
 ### If You See Workflow Runs
 
-✅ **Green checkmark** = Database was deployed successfully
-❌ **Red X** = Deployment failed (check logs)
-🟡 **Yellow circle** = Currently running
+ **Green checkmark** = Database was deployed successfully
+ **Red X** = Deployment failed (check logs)
+ **Yellow circle** = Currently running
 
 ### If You Don't See Any Runs
 
