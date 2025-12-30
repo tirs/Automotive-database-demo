@@ -19,6 +19,11 @@ import Notifications from './components/Notifications';
 import Calendar from './components/Calendar';
 import BulkOperations from './components/BulkOperations';
 import Reports from './components/Reports';
+// AI & Automation Components
+import SmartSearch from './components/SmartSearch';
+import PredictiveMaintenance from './components/PredictiveMaintenance';
+import VINDecoder from './components/VINDecoder';
+import WorkflowAutomation from './components/WorkflowAutomation';
 import { trackPageView } from './analytics';
 import './App.css';
 
@@ -80,6 +85,11 @@ function App() {
             <Route path="/appraisals" element={<Appraisals />} />
             <Route path="/bulk-operations" element={<BulkOperations />} />
             <Route path="/reports" element={<Reports />} />
+            {/* AI & Automation Routes */}
+            <Route path="/smart-search" element={<SmartSearch />} />
+            <Route path="/predictive-maintenance" element={<PredictiveMaintenance />} />
+            <Route path="/vin-decoder" element={<VINDecoder />} />
+            <Route path="/workflows" element={<WorkflowAutomation />} />
           </Routes>
           </main>
         </div>

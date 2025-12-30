@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
 import { LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import AIInsights from './AIInsights';
 import './Components.css';
 
 function Dashboard() {
@@ -261,6 +262,10 @@ function Dashboard() {
       </div>
 
       <div className="glass-container">
+        <AIInsights />
+      </div>
+
+      <div className="glass-container">
         <h2 className="section-title">Quick Overview</h2>
         <div className="info-grid">
           <div className="info-item">
@@ -275,10 +280,14 @@ function Dashboard() {
             <span className="info-label">System Health</span>
             <span className="info-value status-active">Healthy</span>
           </div>
+          <div className="info-item">
+            <span className="info-label">AI Features</span>
+            <span className="info-value status-active">Enabled</span>
+          </div>
         </div>
         <p className="info-text">
-          This dashboard provides a comprehensive overview of your automotive database.
-          Navigate through the sidebar to explore vehicles, owners, and service records in detail.
+          This dashboard provides a comprehensive overview of your automotive database with AI-powered insights.
+          Navigate through the sidebar to explore vehicles, owners, service records, and AI automation features.
         </p>
       </div>
     </>

@@ -12,8 +12,9 @@ function Sidebar() {
       exact: true
     },
     {
-      path: '/search',
-      label: 'Search'
+      path: '/smart-search',
+      label: 'Smart Search',
+      isNew: true
     },
     {
       path: '/notifications',
@@ -22,6 +23,29 @@ function Sidebar() {
     {
       path: '/calendar',
       label: 'Calendar'
+    },
+    // AI & Automation Section
+    {
+      section: 'AI & Automation'
+    },
+    {
+      path: '/predictive-maintenance',
+      label: 'Predictive Maintenance',
+      isNew: true
+    },
+    {
+      path: '/vin-decoder',
+      label: 'VIN Decoder',
+      isNew: true
+    },
+    {
+      path: '/workflows',
+      label: 'Workflow Automation',
+      isNew: true
+    },
+    // Data Management Section
+    {
+      section: 'Data Management'
     },
     {
       path: '/vehicles',
@@ -71,6 +95,10 @@ function Sidebar() {
       path: '/appraisals',
       label: 'Appraisals'
     },
+    // Tools Section
+    {
+      section: 'Tools'
+    },
     {
       path: '/bulk-operations',
       label: 'Bulk Operations'
@@ -78,6 +106,10 @@ function Sidebar() {
     {
       path: '/reports',
       label: 'Reports'
+    },
+    {
+      path: '/search',
+      label: 'Basic Search'
     }
   ];
 
@@ -101,16 +133,26 @@ function Sidebar() {
       
       <nav className="sidebar-nav">
         <ul className="nav-menu">
-          {menuItems.map((item) => (
-            <li key={item.path} className="nav-item">
-              <Link
-                to={item.path}
-                className={`nav-link ${isActive(item.path, item.exact) ? 'active' : ''}`}
-              >
-                <span className="nav-label">{item.label}</span>
-              </Link>
-            </li>
-          ))}
+          {menuItems.map((item, index) => {
+            if (item.section) {
+              return (
+                <li key={`section-${index}`} className="nav-section">
+                  <span className="nav-section-label">{item.section}</span>
+                </li>
+              );
+            }
+            return (
+              <li key={item.path} className="nav-item">
+                <Link
+                  to={item.path}
+                  className={`nav-link ${isActive(item.path, item.exact) ? 'active' : ''}`}
+                >
+                  <span className="nav-label">{item.label}</span>
+                  {item.isNew && <span className="nav-badge-new">AI</span>}
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       </nav>
 

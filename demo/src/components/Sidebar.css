@@ -107,6 +107,37 @@
   letter-spacing: 0.3px;
 }
 
+.nav-badge-new {
+  margin-left: auto;
+  padding: 2px 8px;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(139, 92, 246, 0.3));
+  border: 1px solid rgba(139, 92, 246, 0.3);
+  border-radius: 10px;
+  font-size: 9px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.9);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.nav-section {
+  margin-top: 16px;
+  margin-bottom: 8px;
+  padding: 0 16px;
+}
+
+.nav-section:first-child {
+  margin-top: 0;
+}
+
+.nav-section-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
 .sidebar-footer {
   padding: 20px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
