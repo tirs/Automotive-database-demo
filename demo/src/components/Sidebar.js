@@ -43,6 +43,11 @@ function Sidebar() {
       label: 'Workflow Automation',
       isNew: true
     },
+    {
+      path: '/ai-insights',
+      label: 'AI Insights',
+      isNew: true
+    },
     // Data Management Section
     {
       section: 'Data Management'

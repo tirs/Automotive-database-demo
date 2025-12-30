@@ -24,6 +24,7 @@ import SmartSearch from './components/SmartSearch';
 import PredictiveMaintenance from './components/PredictiveMaintenance';
 import VINDecoder from './components/VINDecoder';
 import WorkflowAutomation from './components/WorkflowAutomation';
+import AIInsights from './components/AIInsights';
 import { trackPageView } from './analytics';
 import './App.css';
 
@@ -90,6 +91,7 @@ function App() {
             <Route path="/predictive-maintenance" element={<PredictiveMaintenance />} />
             <Route path="/vin-decoder" element={<VINDecoder />} />
             <Route path="/workflows" element={<WorkflowAutomation />} />
+            <Route path="/ai-insights" element={<AIInsights />} />
           </Routes>
           </main>
         </div>

@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { getPredictiveMaintenance } from '../services/aiServices';
 import './Components.css';
 
 function PredictiveMaintenance() {
+    const navigate = useNavigate();
     const [predictions, setPredictions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedRisk, setSelectedRisk] = useState('all');
+    const [selectedVehicle, setSelectedVehicle] = useState(null);
+    const [showScheduleModal, setShowScheduleModal] = useState(false);
+    const [scheduleLoading, setScheduleLoading] = useState(false);
 
     useEffect(() => {
         fetchPredictions();
@@ -56,6 +61,8 @@ function PredictiveMaintenance() {
                     { id: '3', vin: '1FA6P8CF5J5123456', year: 2018, mileage: 98000, manufacturer: 'Ford', model: 'Mustang' },
                     { id: '4', vin: '5YJ3E1EA7LF123456', year: 2022, mileage: 25000, manufacturer: 'Tesla', model: 'Model 3' },
                     { id: '5', vin: 'WBAPH5C55BA123456', year: 2019, mileage: 78000, manufacturer: 'BMW', model: '3 Series' },
+                    { id: '6', vin: '1G1YY22G955123456', year: 2019, mileage: 115000, manufacturer: 'Chevrolet', model: 'Corvette' },
+                    { id: '7', vin: 'JT2BG22K310123456', year: 2017, mileage: 88000, manufacturer: 'Toyota', model: 'Corolla' },
                 ];
             }
             
@@ -105,6 +112,30 @@ function PredictiveMaintenance() {
         return diffDays;
     };
 
+    const handleScheduleService = (prediction) => {
+        setSelectedVehicle(prediction);
+        setShowScheduleModal(true);
+    };
+
+    const handleConfirmSchedule = async () => {
+        setScheduleLoading(true);
+        try {
+            // Simulate scheduling
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            alert(`Service scheduled for ${selectedVehicle.vehicleInfo?.year} ${selectedVehicle.vehicleInfo?.manufacturer} ${selectedVehicle.vehicleInfo?.model}`);
+            setShowScheduleModal(false);
+            setSelectedVehicle(null);
+        } catch (err) {
+            setError('Failed to schedule service: ' + err.message);
+        } finally {
+            setScheduleLoading(false);
+        }
+    };
+
+    const handleViewHistory = (vehicleId) => {
+        navigate(`/service-records?vehicleId=${vehicleId}`);
+    };
+
     const filteredPredictions = selectedRisk === 'all'
         ? predictions
         : predictions.filter(p => p.riskLevel === selectedRisk);
@@ -149,7 +180,11 @@ function PredictiveMaintenance() {
             </div>
 
             <div className="stats-grid" style={{ marginBottom: '24px' }}>
-                <div className="stat-card glass-container" style={{ borderLeft: '4px solid #dc2626' }}>
+                <div 
+                    className={`stat-card glass-container clickable ${selectedRisk === 'critical' ? 'selected' : ''}`} 
+                    style={{ borderLeft: '4px solid #dc2626' }}
+                    onClick={() => setSelectedRisk(selectedRisk === 'critical' ? 'all' : 'critical')}
+                >
                     <div className="stat-card-content">
                         <div className="stat-info">
                             <h3 className="stat-title">Critical</h3>
@@ -157,7 +192,11 @@ function PredictiveMaintenance() {
                         </div>
                     </div>
                 </div>
-                <div className="stat-card glass-container" style={{ borderLeft: '4px solid #f59e0b' }}>
+                <div 
+                    className={`stat-card glass-container clickable ${selectedRisk === 'high' ? 'selected' : ''}`}
+                    style={{ borderLeft: '4px solid #f59e0b' }}
+                    onClick={() => setSelectedRisk(selectedRisk === 'high' ? 'all' : 'high')}
+                >
                     <div className="stat-card-content">
                         <div className="stat-info">
                             <h3 className="stat-title">High Risk</h3>
@@ -165,7 +204,11 @@ function PredictiveMaintenance() {
                         </div>
                     </div>
                 </div>
-                <div className="stat-card glass-container" style={{ borderLeft: '4px solid #3b82f6' }}>
+                <div 
+                    className={`stat-card glass-container clickable ${selectedRisk === 'medium' ? 'selected' : ''}`}
+                    style={{ borderLeft: '4px solid #3b82f6' }}
+                    onClick={() => setSelectedRisk(selectedRisk === 'medium' ? 'all' : 'medium')}
+                >
                     <div className="stat-card-content">
                         <div className="stat-info">
                             <h3 className="stat-title">Medium Risk</h3>
@@ -173,7 +216,11 @@ function PredictiveMaintenance() {
                         </div>
                     </div>
                 </div>
-                <div className="stat-card glass-container" style={{ borderLeft: '4px solid #10b981' }}>
+                <div 
+                    className={`stat-card glass-container clickable ${selectedRisk === 'low' ? 'selected' : ''}`}
+                    style={{ borderLeft: '4px solid #10b981' }}
+                    onClick={() => setSelectedRisk(selectedRisk === 'low' ? 'all' : 'low')}
+                >
                     <div className="stat-card-content">
                         <div className="stat-info">
                             <h3 className="stat-title">Low Risk</h3>
@@ -243,7 +290,7 @@ function PredictiveMaintenance() {
                                             <span className="detail-label">Due Date</span>
                                             <span className="detail-value">
                                                 {formatDate(prediction.predictedDate)}
-                                                <span className="days-until" style={{ color: daysUntil <= 7 ? '#dc2626' : 'inherit' }}>
+                                                <span className="days-until" style={{ color: daysUntil <= 7 ? '#dc2626' : daysUntil <= 14 ? '#f59e0b' : 'inherit' }}>
                                                     ({daysUntil} days)
                                                 </span>
                                             </span>
@@ -263,6 +310,12 @@ function PredictiveMaintenance() {
                                         <div className="prediction-detail">
                                             <span className="detail-label">Confidence</span>
                                             <span className="detail-value">
+                                                <span className="confidence-indicator">
+                                                    <span 
+                                                        className="confidence-fill" 
+                                                        style={{ width: `${prediction.confidenceScore * 100}%` }}
+                                                    />
+                                                </span>
                                                 {Math.round(prediction.confidenceScore * 100)}%
                                             </span>
                                         </div>
@@ -284,8 +337,18 @@ function PredictiveMaintenance() {
                                     </div>
                                     
                                     <div className="prediction-actions">
-                                        <button className="btn-primary">Schedule Service</button>
-                                        <button className="btn-secondary">View History</button>
+                                        <button 
+                                            className="btn-primary"
+                                            onClick={() => handleScheduleService(prediction)}
+                                        >
+                                            Schedule Service
+                                        </button>
+                                        <button 
+                                            className="btn-secondary"
+                                            onClick={() => handleViewHistory(prediction.vehicleId)}
+                                        >
+                                            View History
+                                        </button>
                                     </div>
                                 </div>
                             );
@@ -293,9 +356,75 @@ function PredictiveMaintenance() {
                     </div>
                 )}
             </div>
+
+            {/* Schedule Service Modal */}
+            {showScheduleModal && selectedVehicle && (
+                <div className="modal-overlay" onClick={() => setShowScheduleModal(false)}>
+                    <div className="modal-content" onClick={e => e.stopPropagation()}>
+                        <div className="modal-header">
+                            <h3>Schedule Service</h3>
+                            <button className="modal-close" onClick={() => setShowScheduleModal(false)}>X</button>
+                        </div>
+                        <div className="modal-body">
+                            <div className="schedule-vehicle-info">
+                                <h4>
+                                    {selectedVehicle.vehicleInfo?.year} {selectedVehicle.vehicleInfo?.manufacturer} {selectedVehicle.vehicleInfo?.model}
+                                </h4>
+                                <p>VIN: {selectedVehicle.vehicleInfo?.vin}</p>
+                            </div>
+                            <div className="schedule-service-info">
+                                <div className="info-row">
+                                    <span className="info-label">Service Type:</span>
+                                    <span className="info-value">{selectedVehicle.serviceType}</span>
+                                </div>
+                                <div className="info-row">
+                                    <span className="info-label">Recommended Date:</span>
+                                    <span className="info-value">{formatDate(selectedVehicle.predictedDate)}</span>
+                                </div>
+                                <div className="info-row">
+                                    <span className="info-label">Estimated Cost:</span>
+                                    <span className="info-value">${selectedVehicle.estimatedCost?.toFixed(2)}</span>
+                                </div>
+                            </div>
+                            <div className="schedule-form">
+                                <label>
+                                    Preferred Date:
+                                    <input 
+                                        type="date" 
+                                        defaultValue={selectedVehicle.predictedDate}
+                                        className="form-input"
+                                    />
+                                </label>
+                                <label>
+                                    Notes:
+                                    <textarea 
+                                        className="form-input"
+                                        placeholder="Any additional notes for the service center..."
+                                        rows={3}
+                                    />
+                                </label>
+                            </div>
+                        </div>
+                        <div className="modal-footer">
+                            <button 
+                                className="btn-secondary" 
+                                onClick={() => setShowScheduleModal(false)}
+                            >
+                                Cancel
+                            </button>
+                            <button 
+                                className="btn-primary"
+                                onClick={handleConfirmSchedule}
+                                disabled={scheduleLoading}
+                            >
+                                {scheduleLoading ? 'Scheduling...' : 'Confirm Schedule'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     );
 }
 
 export default PredictiveMaintenance;
-

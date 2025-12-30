@@ -1244,6 +1244,494 @@
 }
 
 /* ============================================================================
+   VIN DECODER TABS AND ADDITIONAL FEATURES
+   ============================================================================ */
+
+.vin-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 4px;
+}
+
+.tab-btn {
+  padding: 12px 24px;
+  background: transparent;
+  border: none;
+  border-radius: 8px 8px 0 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tab-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+}
+
+.tab-btn.active {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+}
+
+.tab-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Recalls Display */
+.no-recalls {
+  text-align: center;
+  padding: 48px 20px;
+}
+
+.success-icon {
+  width: 64px;
+  height: 64px;
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0 auto 16px;
+}
+
+.no-recalls h4 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  color: var(--text-primary);
+}
+
+.no-recalls p {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.recalls-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.recall-summary {
+  padding: 12px 16px;
+  background: rgba(220, 38, 38, 0.1);
+  border-radius: 8px;
+  color: #dc2626;
+  font-weight: 500;
+}
+
+.recall-count {
+  font-size: 24px;
+  font-weight: 700;
+  margin-right: 8px;
+}
+
+.recall-item {
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  border-left: 4px solid #f59e0b;
+}
+
+.recall-item.critical {
+  border-left-color: #dc2626;
+}
+
+.recall-item.warning {
+  border-left-color: #f59e0b;
+}
+
+.recall-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.recall-number {
+  font-family: 'SF Mono', 'Consolas', monospace;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.recall-severity {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.recall-severity.critical {
+  background: rgba(220, 38, 38, 0.2);
+  color: #dc2626;
+}
+
+.recall-severity.warning {
+  background: rgba(245, 158, 11, 0.2);
+  color: #f59e0b;
+}
+
+.recall-item h4 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  color: var(--text-primary);
+}
+
+.recall-summary-text {
+  margin: 0 0 16px 0;
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.recall-details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+}
+
+.recall-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.recall-detail .detail-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+/* Valuation Display */
+.valuation-result {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.valuation-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px;
+  background: rgba(16, 185, 129, 0.1);
+  border-radius: 16px;
+}
+
+.valuation-value {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.value-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.value-amount {
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.value-range {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.confidence-badge {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.confidence-badge.high {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+}
+
+.confidence-badge.medium {
+  background: rgba(245, 158, 11, 0.2);
+  color: #f59e0b;
+}
+
+.confidence-badge.low {
+  background: rgba(220, 38, 38, 0.2);
+  color: #dc2626;
+}
+
+.valuation-factors {
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+}
+
+.valuation-factors h4 {
+  margin: 0 0 16px 0;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.factor-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.factor-item:last-child {
+  border-bottom: none;
+}
+
+.factor-name {
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.factor-value {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.factor-value.positive {
+  color: #10b981;
+}
+
+.factor-value.negative {
+  color: #dc2626;
+}
+
+.valuation-meta {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* ============================================================================
+   MODAL STYLES
+   ============================================================================ */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-content {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: var(--text-primary);
+}
+
+.modal-close {
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+}
+
+.modal-body {
+  padding: 24px;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 20px 24px;
+  border-top: 1px solid var(--border-color);
+}
+
+/* Schedule Modal Specific */
+.schedule-vehicle-info {
+  margin-bottom: 20px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+}
+
+.schedule-vehicle-info h4 {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  color: var(--text-primary);
+}
+
+.schedule-vehicle-info p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-muted);
+  font-family: 'SF Mono', 'Consolas', monospace;
+}
+
+.schedule-service-info {
+  margin-bottom: 20px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-row .info-label {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.info-row .info-value {
+  font-size: 13px;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.schedule-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.schedule-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.form-input {
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* ============================================================================
+   CONFIDENCE INDICATOR
+   ============================================================================ */
+
+.confidence-indicator {
+  display: inline-block;
+  width: 60px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.confidence-fill {
+  height: 100%;
+  background: linear-gradient(to right, #f59e0b, #10b981);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+/* ============================================================================
+   CLICKABLE STAT CARDS
+   ============================================================================ */
+
+.stat-card.clickable {
+  cursor: pointer;
+}
+
+.stat-card.clickable:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.stat-card.selected {
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+}
+
+/* ============================================================================
+   BUTTON STATES
+   ============================================================================ */
+
+.btn-primary:disabled,
+.btn-secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-primary:disabled:hover,
+.btn-secondary:disabled:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+/* ============================================================================
    RESPONSIVE ADJUSTMENTS FOR AI COMPONENTS
    ============================================================================ */
 
