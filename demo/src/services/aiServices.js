@@ -6,10 +6,6 @@
  * return simulated data directly.
  */
 
-// Configuration
-const API_BASE_URL = process.env.REACT_APP_AI_API_URL || 'http://localhost:8000/api';
-const USE_MOCK = true; // Set to false to use real backend
-
 // Helper to simulate API delay
 const simulateDelay = (ms = 500) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -607,7 +603,7 @@ export async function detectCostAnomalies(serviceRecords) {
     };
 }
 
-export default {
+const aiServices = {
     decodeVIN,
     getPredictiveMaintenance,
     checkRecalls,
@@ -619,4 +615,6 @@ export default {
     triggerWorkflow,
     detectCostAnomalies
 };
+
+export default aiServices;
 
