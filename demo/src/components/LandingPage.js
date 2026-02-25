@@ -105,10 +105,10 @@ function LandingPage() {
       <section className="trust-bar">
         <p>Built for fleets and dealerships who demand reliability</p>
         <div className="trust-features">
-          <span>✓ Real NHTSA VIN API</span>
-          <span>✓ Recall Integration</span>
-          <span>✓ Predictive Maintenance</span>
-          <span>✓ Full Compliance Tracking</span>
+          <span>Real NHTSA VIN API</span>
+          <span>Recall Integration</span>
+          <span>Predictive Maintenance</span>
+          <span>Full Compliance Tracking</span>
         </div>
         <div className="trust-badges">
           <span className="trust-badge">NHTSA Certified Data</span>
@@ -123,32 +123,26 @@ function LandingPage() {
         <p className="features-intro">One platform to manage vehicles, owners, service history, compliance, and AI-powered insights.</p>
         <div className="features-grid">
           <div className="feature-card">
-            <div className="feature-icon">🔍</div>
             <h3>Instant VIN Decoding</h3>
             <p>Real NHTSA API integration. Decode any vehicle in seconds—manufacturer, model, year, specs.</p>
           </div>
           <div className="feature-card">
-            <div className="feature-icon">⚡</div>
             <h3>Predictive Maintenance</h3>
             <p>AI predicts when service is due. Reduce downtime and avoid costly breakdowns.</p>
           </div>
           <div className="feature-card">
-            <div className="feature-icon">⚠️</div>
             <h3>Recall & Safety Alerts</h3>
             <p>Automatic recall matching. Never miss a safety notice that affects your fleet.</p>
           </div>
           <div className="feature-card">
-            <div className="feature-icon">📊</div>
             <h3>Smart Analytics</h3>
             <p>Cost trends, compliance status, fleet health—actionable insights at a glance.</p>
           </div>
           <div className="feature-card">
-            <div className="feature-icon">📅</div>
             <h3>Compliance Calendar</h3>
             <p>Inspections, insurance, warranties. Never let an expiration slip through.</p>
           </div>
           <div className="feature-card">
-            <div className="feature-icon">🤖</div>
             <h3>Workflow Automation</h3>
             <p>Automated reminders, follow-ups, and notifications. Set it and forget it.</p>
           </div>
@@ -249,7 +243,7 @@ function LandingPage() {
               rows={3}
             />
             <button type="submit" className="btn-submit" disabled={formStatus === 'submitting'}>
-              {formStatus === 'submitting' ? 'Sending...' : formStatus === 'success' ? '✓ Request Sent!' : 'Request Demo'}
+              {formStatus === 'submitting' ? 'Sending...' : formStatus === 'success' ? 'Request Sent!' : 'Request Demo'}
             </button>
             {formStatus === 'success' && (
               <p className="form-success-msg">We'll be in touch within 24 hours.</p>
