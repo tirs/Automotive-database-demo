@@ -263,25 +263,43 @@
   position: relative;
 }
 
-.tesla-real-image {
+.tesla-embed-wrapper {
   width: 100%;
   height: 100%;
   min-height: 220px;
-  object-fit: cover;
-  object-position: center 30%;
-  animation: teslaKenBurns 12s ease-in-out infinite alternate;
+  position: relative;
+  background-size: cover;
+  background-position: center;
 }
 
-@keyframes teslaKenBurns {
-  0% { transform: scale(1) translate(0, 0); }
-  100% { transform: scale(1.08) translate(-2%, -1%); }
+.tesla-iframe {
+  width: 100%;
+  height: 100%;
+  min-height: 220px;
+  border: none;
+  display: block;
+  position: relative;
+  z-index: 1;
 }
 
-.tesla-image-overlay {
+.tesla-embed-link {
   position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, transparent 0%, rgba(5, 6, 10, 0.4) 100%);
-  pointer-events: none;
+  bottom: 12px;
+  right: 12px;
+  padding: 8px 16px;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 8px;
+  text-decoration: none;
+  z-index: 2;
+  transition: all 0.2s;
+}
+
+.tesla-embed-link:hover {
+  background: rgba(245, 158, 11, 0.95);
+  color: #000;
 }
 
 .mockup-cards {
