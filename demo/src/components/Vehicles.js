@@ -25,6 +25,7 @@ function Vehicles() {
           *,
           vehicle_model:vehicle_model_id (
             name,
+            image_url,
             manufacturer:manufacturer_id (
               name
             )
@@ -96,6 +97,7 @@ function Vehicles() {
             <table className="modern-table">
               <thead>
                 <tr>
+                  <th style={{ width: 56 }}></th>
                   <th>VIN</th>
                   <th>Year</th>
                   <th>Manufacturer</th>
@@ -107,12 +109,21 @@ function Vehicles() {
                 </tr>
               </thead>
               <tbody>
-                {vehicles.map((vehicle) => (
+                {vehicles.map((vehicle) => {
+                  const imgUrl = vehicle.image_url || vehicle.vehicle_model?.image_url;
+                  return (
                   <tr 
                     key={vehicle.id}
                     onClick={() => setSelectedVehicle(vehicle)}
                     className="clickable-row"
                   >
+                    <td>
+                      {imgUrl ? (
+                        <img src={imgUrl} alt="" className="vehicle-thumb" style={{ width: 40, height: 30, objectFit: 'cover', borderRadius: 4 }} />
+                      ) : (
+                        <span className="vehicle-thumb-placeholder" style={{ width: 40, height: 30, background: 'var(--surface)', borderRadius: 4, display: 'inline-block' }} />
+                      )}
+                    </td>
                     <td><strong>{vehicle.vin}</strong></td>
                     <td>{vehicle.year}</td>
                     <td>{vehicle.vehicle_model?.manufacturer?.name || 'N/A'}</td>
@@ -131,7 +142,7 @@ function Vehicles() {
                       </span>
                     </td>
                   </tr>
-                ))}
+                );})}
               </tbody>
             </table>
           </div>

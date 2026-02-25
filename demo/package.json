@@ -13,6 +13,7 @@
     "recharts": "^2.15.4"
   },
   "scripts": {
+    "seed": "node scripts/seedVehicles.js",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "build:netlify": "node scripts/build-netlify.js",

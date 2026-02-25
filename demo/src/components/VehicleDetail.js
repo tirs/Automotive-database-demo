@@ -108,6 +108,15 @@ function VehicleDetail({ vehicle, onClose, onUpdate }) {
         )}
         
         <div className="modal-body">
+          {(vehicle.image_url || vehicle.vehicle_model?.image_url) && (
+            <div className="detail-section vehicle-image-section">
+              <img
+                src={vehicle.image_url || vehicle.vehicle_model?.image_url}
+                alt={`${vehicle.vehicle_model?.manufacturer?.name || ''} ${vehicle.vehicle_model?.name || ''}`}
+                style={{ maxWidth: '100%', maxHeight: 200, objectFit: 'contain', borderRadius: 8 }}
+              />
+            </div>
+          )}
           <div className="detail-section">
             <h3>Basic Information</h3>
             <div className="detail-grid">

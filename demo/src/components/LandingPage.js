@@ -56,13 +56,13 @@ function LandingPage() {
           </div>
         </nav>
         <div className="hero-content">
-          <div className="hero-badge">AI-Powered Fleet & Vehicle Management</div>
+          <div className="hero-badge">Enterprise-Grade Fleet & Vehicle Intelligence</div>
           <h1 className="hero-title">
-            Never lose track of a vehicle again.
+            The platform that scales with your fleet.
           </h1>
           <p className="hero-subtitle">
-            The complete platform for dealerships, fleets, and service centers. 
-            VIN decoding, predictive maintenance, recall tracking, and real-time insights—all in one place.
+            Built for dealerships, fleets, and service centers. Real NHTSA integration, AI-driven maintenance, 
+            recall compliance, and actionable insights—all in one enterprise-ready platform.
           </p>
           <div className="hero-ctas">
             <Link to="/dashboard" className="btn-hero-primary">Explore the Platform</Link>
@@ -70,16 +70,16 @@ function LandingPage() {
           </div>
           <div className="hero-stats">
             <div className="stat">
-              <span className="stat-value">19</span>
-              <span className="stat-label">Data Entities</span>
+              <span className="stat-value">NHTSA</span>
+              <span className="stat-label">Official API</span>
             </div>
             <div className="stat">
               <span className="stat-value">AI</span>
-              <span className="stat-label">Powered Insights</span>
+              <span className="stat-label">Predictive Engine</span>
             </div>
             <div className="stat">
-              <span className="stat-value">24/7</span>
-              <span className="stat-label">Real-time Sync</span>
+              <span className="stat-value">Enterprise</span>
+              <span className="stat-label">Ready to Scale</span>
             </div>
           </div>
         </div>
@@ -111,7 +111,7 @@ function LandingPage() {
 
       {/* Trust Bar */}
       <section className="trust-bar">
-        <p>Built for fleets and dealerships who demand reliability</p>
+        <p className="trust-tagline">Trusted by fleets and dealerships who demand reliability</p>
         <div className="trust-features">
           <span>Real NHTSA VIN API</span>
           <span>Recall Integration</span>
@@ -121,14 +121,14 @@ function LandingPage() {
         <div className="trust-badges">
           <span className="trust-badge">NHTSA Certified Data</span>
           <span className="trust-badge">Enterprise-Grade Security</span>
-          <span className="trust-badge">99.9% Uptime</span>
+          <span className="trust-badge">Scalable Architecture</span>
         </div>
       </section>
 
       {/* Features Section */}
       <section id="features" className="landing-features">
-        <h2>Everything you need. Nothing you don't.</h2>
-        <p className="features-intro">One platform to manage vehicles, owners, service history, compliance, and AI-powered insights.</p>
+        <h2>Built for the modern automotive industry</h2>
+        <p className="features-intro">One platform to manage vehicles, owners, service history, compliance, and AI-powered insights—designed to scale.</p>
         <div className="features-grid">
           <div className="feature-card">
             <h3>Instant VIN Decoding</h3>
@@ -178,7 +178,7 @@ function LandingPage() {
             <Link to="/dashboard" className="btn-pricing">Get Started Free</Link>
           </div>
           <div className="pricing-card featured">
-            <div className="featured-badge">Most Popular</div>
+            <div className="featured-badge">Recommended</div>
             <h3>Professional</h3>
             <div className="price">
               <span className="price-amount">$199</span>
@@ -216,7 +216,7 @@ function LandingPage() {
       <section id="demo" className="landing-demo">
         <div className="demo-content">
           <h2>See AutoDB in action</h2>
-          <p>Get a personalized walkthrough. No commitment required.</p>
+          <p>Schedule a personalized demo. No commitment required.</p>
           <form onSubmit={handleSubmit} className="demo-form">
             <div className="form-row">
               <input
