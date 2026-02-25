@@ -1389,6 +1389,15 @@
   color: var(--text-secondary);
 }
 
+.no-recalls a {
+  color: var(--accent-primary);
+  text-decoration: underline;
+}
+
+.no-recalls a:hover {
+  color: var(--accent-secondary);
+}
+
 .recalls-list {
   display: flex;
   flex-direction: column;

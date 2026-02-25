@@ -125,6 +125,15 @@ function VINDecoder() {
     const renderRecallsTab = () => {
         if (!recallData) return null;
         
+        if (recallData.apiError) {
+            return (
+                <div className="no-recalls">
+                    <h4>Recall Data Unavailable</h4>
+                    <p>Unable to fetch recall data from NHTSA. Please check <a href="https://www.nhtsa.gov/recalls" target="_blank" rel="noopener noreferrer">NHTSA.gov/recalls</a> directly for this VIN.</p>
+                </div>
+            );
+        }
+        
         if (recallData.vehiclesWithRecalls === 0) {
             return (
                 <div className="no-recalls">

@@ -1,9 +1,9 @@
 /**
- * AI Services - Mock API client for AI/Automation features
+ * AI Services - VIN Decoder & Recalls use real NHTSA APIs
  * 
- * This file provides mock implementations of AI services that would
- * normally connect to the FastAPI backend. For demo purposes, these
- * return simulated data directly.
+ * - decodeVIN: Real NHTSA VPIC API (vpic.nhtsa.dot.gov)
+ * - checkRecalls: Real NHTSA Recalls API (api.nhtsa.gov)
+ * - Other services (predictions, valuation, etc.) use simulated data
  */
 
 // Helper to simulate API delay
@@ -39,11 +39,11 @@ export async function decodeVIN(vin) {
         const r = data.Results[0];
         
         // NHTSA returns "Invalid" or empty for failed decodes
-        const make = r.Make || '';
-        const model = r.Model || '';
+        const make = (r.Make || '').trim();
+        const model = (r.Model || r.NCSAModel || '').trim() || 'Vehicle';
         const year = r.ModelYear || '';
 
-        if (!make || !model || make === 'Invalid' || model === 'Invalid') {
+        if (!make || make === 'Invalid') {
             return { 
                 isValid: false, 
                 error: "VIN could not be decoded. This may be an invalid or unsupported VIN." 
@@ -134,82 +134,75 @@ export async function getPredictiveMaintenance(vehicles) {
 }
 
 // ============================================================================
-// RECALL MATCHING SERVICE
+// RECALL MATCHING SERVICE - Real NHTSA API
 // ============================================================================
 
-const MOCK_RECALLS = [
-    {
-        recallNumber: "21V-842",
-        manufacturer: "Toyota",
-        models: ["Camry", "Corolla", "RAV4"],
-        years: [2018, 2019, 2020, 2021],
-        component: "Fuel Pump",
-        summary: "The fuel pump may fail, causing the engine to stall while driving.",
-        consequence: "An engine stall while driving increases the risk of a crash.",
-        remedy: "Dealers will replace the fuel pump free of charge.",
-        severity: "critical"
-    },
-    {
-        recallNumber: "22V-123",
-        manufacturer: "Ford",
-        models: ["F-150", "Explorer"],
-        years: [2019, 2020, 2021, 2022],
-        component: "Rearview Camera",
-        summary: "The rearview camera display may intermittently fail.",
-        consequence: "A blank rearview display increases the risk of a crash while reversing.",
-        remedy: "Dealers will update the software free of charge.",
-        severity: "warning"
-    },
-    {
-        recallNumber: "23V-567",
-        manufacturer: "Honda",
-        models: ["Civic", "Accord", "CR-V"],
-        years: [2016, 2017, 2018, 2019],
-        component: "Airbag Inflator",
-        summary: "The front passenger airbag inflator may rupture during deployment.",
-        consequence: "A rupturing inflator may cause metal fragments to strike vehicle occupants.",
-        remedy: "Dealers will replace the airbag inflator free of charge.",
-        severity: "critical"
+const NHTSA_RECALLS_API = 'https://api.nhtsa.gov/recalls/recallsByVin';
+
+async function fetchRecallsByVin(vin) {
+    const url = `${NHTSA_RECALLS_API}/${vin}`;
+    let response = await fetch(url, { headers: { 'Accept': 'application/json' } });
+    
+    if (!response.ok) {
+        const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(url)}`;
+        response = await fetch(proxyUrl, { headers: { 'Accept': 'application/json' } });
     }
-];
+    return response;
+}
 
 export async function checkRecalls(vehicles) {
-    await simulateDelay(500);
-    
     const matches = [];
-    
-    vehicles.forEach(vehicle => {
-        const vehicleRecalls = MOCK_RECALLS.filter(recall => {
-            const manufacturerMatch = vehicle.manufacturer?.toLowerCase().includes(recall.manufacturer.toLowerCase()) ||
-                                     recall.manufacturer.toLowerCase().includes(vehicle.manufacturer?.toLowerCase() || '');
-            const modelMatch = recall.models.some(m => 
-                vehicle.model?.toLowerCase().includes(m.toLowerCase()) ||
-                m.toLowerCase().includes(vehicle.model?.toLowerCase() || '')
-            );
-            const yearMatch = recall.years.includes(vehicle.year);
+    let apiError = false;
+
+    for (const vehicle of vehicles) {
+        const vin = (vehicle.vin || '').trim().toUpperCase();
+        if (!vin || vin.length !== 17) continue;
+
+        try {
+            const response = await fetchRecallsByVin(vin);
             
-            return manufacturerMatch && modelMatch && yearMatch;
-        });
-        
-        if (vehicleRecalls.length > 0) {
-            matches.push({
-                vehicleId: vehicle.id,
-                vin: vehicle.vin,
-                manufacturer: vehicle.manufacturer,
-                model: vehicle.model,
-                year: vehicle.year,
-                recalls: vehicleRecalls,
-                priority: vehicleRecalls.some(r => r.severity === "critical") ? "critical" : "medium"
-            });
+            if (!response.ok) {
+                apiError = true;
+                continue;
+            }
+
+            const data = await response.json();
+            const results = data.results || data.Results || [];
+            const count = data.count ?? data.Count ?? results.length;
+
+            if (count > 0 && results.length > 0) {
+                const recalls = results.map(r => ({
+                    recallNumber: r.nhtsaId || r.campaignNumber || r.recallNumber || r.NHTSACampaignNumber || 'N/A',
+                    component: r.component || r.Component || (r.summary || '').split(' ').slice(0, 4).join(' ') || 'Safety',
+                    summary: r.summary || r.Summary || r.description || r.Consequence || 'Recall issued.',
+                    consequence: r.consequence || r.Consequence || r.summary || '',
+                    remedy: r.remedy || r.Remedy || 'Contact dealer for remedy.',
+                    severity: ((r.consequence || r.Consequence || '') + (r.summary || '')).toLowerCase().match(/crash|injury|fire/) ? 'critical' : 'warning'
+                }));
+
+                matches.push({
+                    vehicleId: vehicle.id,
+                    vin: vehicle.vin,
+                    manufacturer: vehicle.manufacturer,
+                    model: vehicle.model,
+                    year: vehicle.year,
+                    recalls,
+                    priority: recalls.some(r => r.severity === 'critical') ? 'critical' : 'medium'
+                });
+            }
+        } catch (err) {
+            console.warn('NHTSA recalls API error for VIN', vin, err);
+            apiError = true;
         }
-    });
-    
+    }
+
     return {
         matches,
         totalVehiclesChecked: vehicles.length,
         vehiclesWithRecalls: matches.length,
         totalRecallsFound: matches.reduce((sum, m) => sum + m.recalls.length, 0),
-        checkedAt: new Date().toISOString()
+        checkedAt: new Date().toISOString(),
+        apiError: apiError && matches.length === 0
     };
 }
 
