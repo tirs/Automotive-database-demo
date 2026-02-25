@@ -212,17 +212,14 @@ function Dashboard() {
             <p>Try these powerful features to see what makes AutoDB indispensable:</p>
             <div className="welcome-actions">
               <button className="welcome-action-btn" onClick={() => navigate('/vin-decoder')}>
-                <span className="welcome-action-icon">🔍</span>
                 <span>Decode a VIN</span>
                 <span className="welcome-action-desc">Real NHTSA data</span>
               </button>
               <button className="welcome-action-btn" onClick={() => navigate('/predictive-maintenance')}>
-                <span className="welcome-action-icon">⚡</span>
                 <span>Predictive Maintenance</span>
                 <span className="welcome-action-desc">AI-powered</span>
               </button>
               <button className="welcome-action-btn" onClick={() => navigate('/ai-insights')}>
-                <span className="welcome-action-icon">🤖</span>
                 <span>AI Insights</span>
                 <span className="welcome-action-desc">Smart recommendations</span>
               </button>

@@ -430,7 +430,7 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
-  align-items: start;
+  align-items: stretch;
 }
 
 .pricing-card {
@@ -440,6 +440,9 @@
   border-radius: 16px;
   position: relative;
   transition: all 0.3s;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 .pricing-card:hover {
@@ -449,7 +452,6 @@
 .pricing-card.featured {
   background: linear-gradient(135deg, rgba(245, 158, 11, 0.08), rgba(245, 158, 11, 0.02));
   border-color: rgba(245, 158, 11, 0.35);
-  transform: scale(1.02);
 }
 
 .featured-badge {
@@ -495,6 +497,7 @@
   list-style: none;
   padding: 0;
   margin: 0 0 32px 0;
+  flex: 1;
 }
 
 .pricing-card li {
