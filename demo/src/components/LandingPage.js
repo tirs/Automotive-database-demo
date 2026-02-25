@@ -1,44 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import './LandingPage.css';
 
 function LandingPage() {
-  const [formData, setFormData] = useState({ name: '', email: '', company: '', message: '' });
-
-  useEffect(() => {
-    if (window.location.hash === '#demo') {
-      document.getElementById('demo')?.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, []);
-  const [formStatus, setFormStatus] = useState('idle'); // idle | submitting | success | error
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setFormStatus('submitting');
-    
-    try {
-      // Formspree/Netlify Forms - set REACT_APP_FORM_ENDPOINT in env for production
-      const endpoint = process.env.REACT_APP_FORM_ENDPOINT || '';
-      if (endpoint) {
-        const formDataToSend = new FormData();
-        Object.entries(formData).forEach(([k, v]) => v && formDataToSend.append(k, v));
-        const res = await fetch(endpoint, { method: 'POST', body: formDataToSend });
-        if (!res.ok) throw new Error('Submission failed');
-      } else {
-        // Demo mode - simulate success
-        await new Promise(r => setTimeout(r, 1200));
-      }
-      setFormStatus('success');
-      setFormData({ name: '', email: '', company: '', message: '' });
-    } catch (err) {
-      setFormStatus('error');
-    }
-  };
-
-  const handleChange = (e) => {
-    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-
   return (
     <div className="landing-page">
       {/* Hero Section */}
@@ -51,7 +15,6 @@ function LandingPage() {
           <div className="nav-links">
             <a href="#features">Features</a>
             <a href="#pricing">Pricing</a>
-            <a href="#demo">Request Demo</a>
             <Link to="/dashboard" className="nav-cta">Try Demo →</Link>
           </div>
         </nav>
@@ -66,7 +29,6 @@ function LandingPage() {
           </p>
           <div className="hero-ctas">
             <Link to="/dashboard" className="btn-hero-primary">Explore the Platform</Link>
-            <a href="#demo" className="btn-hero-secondary">Schedule a Demo</a>
           </div>
           <div className="hero-stats">
             <div className="stat">
@@ -193,7 +155,7 @@ function LandingPage() {
               <li>Workflow automation</li>
               <li>Priority support</li>
             </ul>
-            <a href="#demo" className="btn-pricing featured">Request Demo</a>
+            <Link to="/dashboard" className="btn-pricing featured">Get Started</Link>
           </div>
           <div className="pricing-card">
             <h3>Enterprise</h3>
@@ -207,59 +169,8 @@ function LandingPage() {
               <li>Dedicated support</li>
               <li>SLA guarantee</li>
             </ul>
-            <a href="#demo" className="btn-pricing">Contact Sales</a>
+            <Link to="/dashboard" className="btn-pricing">Contact Sales</Link>
           </div>
-        </div>
-      </section>
-
-      {/* Request Demo Section */}
-      <section id="demo" className="landing-demo">
-        <div className="demo-content">
-          <h2>See AutoDB in action</h2>
-          <p>Schedule a personalized demo. No commitment required.</p>
-          <form onSubmit={handleSubmit} className="demo-form">
-            <div className="form-row">
-              <input
-                type="text"
-                name="name"
-                placeholder="Your name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-              />
-              <input
-                type="email"
-                name="email"
-                placeholder="Work email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <input
-              type="text"
-              name="company"
-              placeholder="Company name"
-              value={formData.company}
-              onChange={handleChange}
-            />
-            <textarea
-              name="message"
-              placeholder="Tell us about your fleet or dealership..."
-              value={formData.message}
-              onChange={handleChange}
-              rows={3}
-            />
-            <button type="submit" className="btn-submit" disabled={formStatus === 'submitting'}>
-              {formStatus === 'submitting' ? 'Sending...' : formStatus === 'success' ? 'Request Sent!' : 'Request Demo'}
-            </button>
-            {formStatus === 'success' && (
-              <p className="form-success-msg">We'll be in touch within 24 hours.</p>
-            )}
-            {formStatus === 'error' && (
-              <p className="form-error-msg">Something went wrong. Please try again or email us directly.</p>
-            )}
-          </form>
         </div>
       </section>
 
@@ -274,7 +185,6 @@ function LandingPage() {
             <Link to="/dashboard">Try Demo</Link>
             <a href="#features">Features</a>
             <a href="#pricing">Pricing</a>
-            <a href="#demo">Contact</a>
           </div>
           <p className="footer-copy">© {new Date().getFullYear()} AutoDB. All rights reserved.</p>
         </div>

@@ -162,8 +162,8 @@ function Sidebar() {
       </nav>
 
       <div className="sidebar-footer">
-        <Link to="/#demo" className="footer-cta">
-          Request Demo
+        <Link to="/dashboard" className="footer-cta">
+          Try Demo
         </Link>
         <div className="footer-info">
           <p className="footer-text">Automotive Database</p>
