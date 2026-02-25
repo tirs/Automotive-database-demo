@@ -91,25 +91,14 @@ function LandingPage() {
             <div className="mockup-content">
               <div className="mockup-sidebar"></div>
               <div className="mockup-main">
-                <div className="tesla-showcase">
-                  <div
-                    className="tesla-embed-wrapper"
-                    style={{ backgroundImage: 'url(https://images.pexels.com/photos/15089585/pexels-photo-15089585.jpeg?auto=compress&cs=tinysrgb&w=900)' }}
-                  >
-                    <iframe
-                      src="https://www.tesla.com/"
-                      title="Tesla - Electric Cars, Solar & Clean Energy"
-                      className="tesla-iframe"
-                    />
-                    <a
-                      href="https://www.tesla.com/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="tesla-embed-link"
-                    >
-                      Visit Tesla.com
-                    </a>
-                  </div>
+                <div className="hero-showcase">
+                  <img
+                    src="https://images.pexels.com/photos/39501/lamborghini-brno-racing-car-automobiles-39501.jpeg?auto=compress&cs=tinysrgb&w=900"
+                    alt="Luxury car - Automotive fleet management"
+                    className="hero-showcase-image"
+                    loading="eager"
+                  />
+                  <div className="hero-showcase-overlay" />
                 </div>
                 <div className="mockup-cards">
                   <div></div><div></div><div></div><div></div>
