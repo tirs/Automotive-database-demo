@@ -281,7 +281,7 @@
 
 /* Trust Bar */
 .trust-bar {
-  padding: 32px 5%;
+  padding: 24px 5%;
   background: rgba(255, 255, 255, 0.02);
   border-top: 1px solid rgba(255, 255, 255, 0.06);
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
@@ -310,8 +310,8 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 16px;
-  margin-top: 20px;
+  gap: 12px;
+  margin-top: 12px;
 }
 
 .trust-badge {
@@ -326,7 +326,7 @@
 
 /* Features */
 .landing-features {
-  padding: 100px 5%;
+  padding: 48px 5%;
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -343,21 +343,18 @@
   text-align: center;
   font-size: 18px;
   color: rgba(255, 255, 255, 0.7);
-  margin: 0 0 60px 0;
+  margin: 0 auto 32px auto;
   max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 60px;
 }
 
 .features-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 24px;
+  gap: 20px;
 }
 
 .feature-card {
-  padding: 32px;
+  padding: 24px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
@@ -385,8 +382,8 @@
 
 /* Pricing */
 .landing-pricing {
-  padding: 100px 5%;
-  max-width: 1100px;
+  padding: 48px 5%;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -401,21 +398,21 @@
   text-align: center;
   font-size: 18px;
   color: rgba(255, 255, 255, 0.7);
-  margin: 0 0 60px 0;
+  margin: 0 0 32px 0;
 }
 
 .pricing-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
   align-items: start;
 }
 
 .pricing-card {
-  padding: 40px;
+  padding: 28px;
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 20px;
+  border-radius: 16px;
   position: relative;
   transition: all 0.3s;
 }
@@ -516,7 +513,7 @@
 
 /* Demo Form */
 .landing-demo {
-  padding: 100px 5%;
+  padding: 48px 5%;
   background: rgba(255, 255, 255, 0.02);
 }
 
@@ -608,6 +605,12 @@
   color: #ef4444;
   font-size: 14px;
   margin: 0;
+}
+
+@media (max-width: 900px) {
+  .pricing-cards {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 600px) {
