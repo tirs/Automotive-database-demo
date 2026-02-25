@@ -92,25 +92,13 @@ function LandingPage() {
               <div className="mockup-sidebar"></div>
               <div className="mockup-main">
                 <div className="tesla-showcase">
-                  <div className="tesla-road"></div>
-                  <div className="tesla-car">
-                    <svg viewBox="0 0 200 70" className="tesla-svg" xmlns="http://www.w3.org/2000/svg">
-                      <defs>
-                        <linearGradient id="teslaGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                          <stop offset="0%" stopColor="#9ca3af" />
-                          <stop offset="50%" stopColor="#f8fafc" />
-                          <stop offset="100%" stopColor="#9ca3af" />
-                        </linearGradient>
-                      </defs>
-                      <path d="M15 52 L22 38 L38 35 L162 35 L178 38 L185 52 L185 58 L15 58 Z" fill="url(#teslaGrad)" stroke="#64748b" strokeWidth="1.5"/>
-                      <path d="M50 35 L50 22 L80 22 L82 35" fill="rgba(148,163,184,0.6)" stroke="#64748b" strokeWidth="1"/>
-                      <path d="M120 35 L120 22 L150 22 L150 35" fill="rgba(148,163,184,0.6)" stroke="#64748b" strokeWidth="1"/>
-                      <circle cx="48" cy="55" r="5" fill="#0f172a" stroke="#475569"/>
-                      <circle cx="152" cy="55" r="5" fill="#0f172a" stroke="#475569"/>
-                      <rect x="88" y="32" width="24" height="12" rx="1" fill="#0f172a"/>
-                    </svg>
-                    <span className="tesla-label">Model Y</span>
-                  </div>
+                  <img
+                    src="https://images.pexels.com/photos/15089585/pexels-photo-15089585.jpeg?auto=compress&cs=tinysrgb&w=900"
+                    alt="Tesla Model Y - Electric SUV"
+                    className="tesla-real-image"
+                    loading="eager"
+                  />
+                  <div className="tesla-image-overlay" />
                 </div>
                 <div className="mockup-cards">
                   <div></div><div></div><div></div><div></div>
