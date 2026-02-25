@@ -143,6 +143,32 @@
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.footer-cta {
+  display: block;
+  text-align: center;
+  padding: 12px 20px;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(217, 119, 6, 0.3));
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  border-radius: 10px;
+  color: #fbbf24;
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.footer-cta:hover {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.4), rgba(217, 119, 6, 0.4));
+  color: #fff;
+  border-color: rgba(245, 158, 11, 0.6);
+}
+
+.logo {
+  text-decoration: none;
+  color: inherit;
+}
+
 .footer-info {
   text-align: center;
 }

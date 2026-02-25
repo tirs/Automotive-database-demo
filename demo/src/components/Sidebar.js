@@ -7,7 +7,7 @@ function Sidebar() {
 
   const menuItems = [
     {
-      path: '/',
+      path: '/dashboard',
       label: 'Dashboard',
       exact: true
     },
@@ -128,12 +128,12 @@ function Sidebar() {
   return (
     <aside className="sidebar">
       <div className="sidebar-header">
-        <div className="logo">
+        <Link to="/dashboard" className="logo">
           <div className="logo-text">
             <h1>AutoDB</h1>
             <p>Management System</p>
           </div>
-        </div>
+        </Link>
       </div>
       
       <nav className="sidebar-nav">
@@ -162,6 +162,9 @@ function Sidebar() {
       </nav>
 
       <div className="sidebar-footer">
+        <Link to="/#demo" className="footer-cta">
+          Request Demo
+        </Link>
         <div className="footer-info">
           <p className="footer-text">Automotive Database</p>
           <p className="footer-version">v1.0.0</p>

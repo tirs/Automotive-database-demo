@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 import { LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import AIInsights from './AIInsights';
 import './Components.css';
 
 function Dashboard() {
+  const navigate = useNavigate();
+  const [showWelcome, setShowWelcome] = useState(() => {
+    try {
+      return !sessionStorage.getItem('autodb_welcome_dismissed');
+    } catch { return true; }
+  });
   const [stats, setStats] = useState({
     totalVehicles: 0,
     totalOwners: 0,
@@ -196,6 +203,33 @@ function Dashboard() {
         <h1>Dashboard</h1>
         <p>Overview of your automotive database</p>
       </div>
+
+      {showWelcome && (
+        <div className="welcome-banner glass-container">
+          <button className="welcome-dismiss" onClick={() => { setShowWelcome(false); try { sessionStorage.setItem('autodb_welcome_dismissed', '1'); } catch {} }} aria-label="Dismiss">×</button>
+          <div className="welcome-content">
+            <h3>Welcome to AutoDB</h3>
+            <p>Try these powerful features to see what makes AutoDB indispensable:</p>
+            <div className="welcome-actions">
+              <button className="welcome-action-btn" onClick={() => navigate('/vin-decoder')}>
+                <span className="welcome-action-icon">🔍</span>
+                <span>Decode a VIN</span>
+                <span className="welcome-action-desc">Real NHTSA data</span>
+              </button>
+              <button className="welcome-action-btn" onClick={() => navigate('/predictive-maintenance')}>
+                <span className="welcome-action-icon">⚡</span>
+                <span>Predictive Maintenance</span>
+                <span className="welcome-action-desc">AI-powered</span>
+              </button>
+              <button className="welcome-action-btn" onClick={() => navigate('/ai-insights')}>
+                <span className="welcome-action-icon">🤖</span>
+                <span>AI Insights</span>
+                <span className="welcome-action-desc">Smart recommendations</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="stats-grid">
         {statCards.map((card, index) => (

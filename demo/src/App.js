@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import LandingPage from './components/LandingPage';
 import Sidebar from './components/Sidebar';
 import Vehicles from './components/Vehicles';
 import Owners from './components/Owners';
@@ -19,7 +20,6 @@ import Notifications from './components/Notifications';
 import Calendar from './components/Calendar';
 import BulkOperations from './components/BulkOperations';
 import Reports from './components/Reports';
-// AI & Automation Components
 import SmartSearch from './components/SmartSearch';
 import PredictiveMaintenance from './components/PredictiveMaintenance';
 import VINDecoder from './components/VINDecoder';
@@ -28,10 +28,8 @@ import AIInsights from './components/AIInsights';
 import { trackPageView } from './analytics';
 import './App.css';
 
-// Component to track page views on route changes
 function PageViewTracker() {
   const location = useLocation();
-
   useEffect(() => {
     try {
       trackPageView(location.pathname + location.search);
@@ -39,71 +37,78 @@ function PageViewTracker() {
       console.warn('Failed to track page view:', error);
     }
   }, [location]);
-
   return null;
+}
+
+function AppLayout() {
+  const location = useLocation();
+  const isLanding = location.pathname === '/' || location.pathname === '' || location.pathname === '/Automotive-database-demo';
+
+  if (isLanding) {
+    return (
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/Automotive-database-demo" element={<LandingPage />} />
+      </Routes>
+    );
+  }
+
+  return (
+    <div className="App">
+      <Sidebar />
+      <main className="App-main">
+        <Routes>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/search" element={<Search />} />
+          <Route path="/notifications" element={<Notifications />} />
+          <Route path="/calendar" element={<Calendar />} />
+          <Route path="/vehicles" element={<Vehicles />} />
+          <Route path="/owners" element={<Owners />} />
+          <Route path="/service-records" element={<ServiceRecords />} />
+          <Route path="/warranties" element={<Warranties />} />
+          <Route path="/insurance" element={<Insurance />} />
+          <Route path="/inspections" element={<Inspections />} />
+          <Route path="/accidents" element={<Accidents />} />
+          <Route path="/financing" element={<Financing />} />
+          <Route path="/recalls" element={<Recalls />} />
+          <Route path="/fuel-records" element={<FuelRecords />} />
+          <Route path="/documents" element={<Documents />} />
+          <Route path="/appraisals" element={<Appraisals />} />
+          <Route path="/bulk-operations" element={<BulkOperations />} />
+          <Route path="/reports" element={<Reports />} />
+          <Route path="/smart-search" element={<SmartSearch />} />
+          <Route path="/predictive-maintenance" element={<PredictiveMaintenance />} />
+          <Route path="/vin-decoder" element={<VINDecoder />} />
+          <Route path="/workflows" element={<WorkflowAutomation />} />
+          <Route path="/ai-insights" element={<AIInsights />} />
+        </Routes>
+      </main>
+    </div>
+  );
 }
 
 function App() {
   try {
-    // Use basename for GitHub Pages deployment only
-    // GitHub Pages uses subdirectory: /Automotive-database-demo
-    // Netlify serves from root, so basename should be empty
     const getBasename = () => {
-      // Check if we're on GitHub Pages (has subdirectory in pathname)
       if (window.location.pathname.startsWith('/Automotive-database-demo')) {
         return '/Automotive-database-demo';
       }
-      // For Netlify or other root deployments, use empty basename
       return '';
     };
-    
-    const basename = getBasename();
-    
-    console.log('App component rendering with basename:', basename);
-    
+
     return (
-      <Router basename={basename}>
+      <Router basename={getBasename()}>
         <PageViewTracker />
-        <div className="App">
-          <Sidebar />
-          <main className="App-main">
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/search" element={<Search />} />
-            <Route path="/notifications" element={<Notifications />} />
-            <Route path="/calendar" element={<Calendar />} />
-            <Route path="/vehicles" element={<Vehicles />} />
-            <Route path="/owners" element={<Owners />} />
-            <Route path="/service-records" element={<ServiceRecords />} />
-            <Route path="/warranties" element={<Warranties />} />
-            <Route path="/insurance" element={<Insurance />} />
-            <Route path="/inspections" element={<Inspections />} />
-            <Route path="/accidents" element={<Accidents />} />
-            <Route path="/financing" element={<Financing />} />
-            <Route path="/recalls" element={<Recalls />} />
-            <Route path="/fuel-records" element={<FuelRecords />} />
-            <Route path="/documents" element={<Documents />} />
-            <Route path="/appraisals" element={<Appraisals />} />
-            <Route path="/bulk-operations" element={<BulkOperations />} />
-            <Route path="/reports" element={<Reports />} />
-            {/* AI & Automation Routes */}
-            <Route path="/smart-search" element={<SmartSearch />} />
-            <Route path="/predictive-maintenance" element={<PredictiveMaintenance />} />
-            <Route path="/vin-decoder" element={<VINDecoder />} />
-            <Route path="/workflows" element={<WorkflowAutomation />} />
-            <Route path="/ai-insights" element={<AIInsights />} />
-          </Routes>
-          </main>
-        </div>
+        <AppLayout />
       </Router>
     );
   } catch (error) {
     console.error('Error in App component:', error);
     return (
-      <div style={{ 
-        padding: '40px', 
-        color: '#fff', 
-        background: '#0a0e27', 
+      <div style={{
+        padding: '40px',
+        color: '#fff',
+        background: '#0a0e27',
         minHeight: '100vh',
         fontFamily: 'system-ui'
       }}>
@@ -118,10 +123,10 @@ function App() {
         }}>
           <h1 style={{ marginTop: 0 }}>Application Error</h1>
           <p>An error occurred while loading the application.</p>
-          <pre style={{ 
-            background: '#141b2d', 
-            padding: '15px', 
-            borderRadius: '8px', 
+          <pre style={{
+            background: '#141b2d',
+            padding: '15px',
+            borderRadius: '8px',
             overflow: 'auto',
             fontSize: '12px',
             marginTop: '20px'
@@ -136,4 +141,3 @@ function App() {
 }
 
 export default App;
-

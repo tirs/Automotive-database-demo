@@ -10,66 +10,68 @@
 const simulateDelay = (ms = 500) => new Promise(resolve => setTimeout(resolve, ms));
 
 // ============================================================================
-// VIN DECODER SERVICE
+// VIN DECODER SERVICE - Real NHTSA API Integration
 // ============================================================================
 
-const MANUFACTURER_WMI = {
-    "1G1": { manufacturer: "Chevrolet", country: "USA" },
-    "1G6": { manufacturer: "Cadillac", country: "USA" },
-    "1FA": { manufacturer: "Ford", country: "USA" },
-    "1FM": { manufacturer: "Ford", country: "USA" },
-    "1HG": { manufacturer: "Honda", country: "USA" },
-    "1J4": { manufacturer: "Jeep", country: "USA" },
-    "2T1": { manufacturer: "Toyota", country: "Canada" },
-    "4T1": { manufacturer: "Toyota", country: "USA" },
-    "5YJ": { manufacturer: "Tesla", country: "USA" },
-    "JHM": { manufacturer: "Honda", country: "Japan" },
-    "JT2": { manufacturer: "Toyota", country: "Japan" },
-    "WAU": { manufacturer: "Audi", country: "Germany" },
-    "WBA": { manufacturer: "BMW", country: "Germany" },
-    "WDB": { manufacturer: "Mercedes-Benz", country: "Germany" },
-};
-
-const MOCK_MODELS = {
-    "Chevrolet": ["Silverado", "Malibu", "Camaro", "Corvette", "Equinox"],
-    "Ford": ["F-150", "Mustang", "Explorer", "Escape", "Bronco"],
-    "Toyota": ["Camry", "Corolla", "RAV4", "Highlander", "Tacoma"],
-    "Honda": ["Civic", "Accord", "CR-V", "Pilot", "Odyssey"],
-    "BMW": ["3 Series", "5 Series", "X3", "X5", "M3"],
-    "Tesla": ["Model S", "Model 3", "Model X", "Model Y"],
-};
+const NHTSA_VIN_API = 'https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVinValues';
 
 export async function decodeVIN(vin) {
-    await simulateDelay(300);
+    const cleanVin = vin.trim().toUpperCase();
     
-    if (vin.length !== 17) {
+    if (cleanVin.length !== 17) {
         return { isValid: false, error: "VIN must be exactly 17 characters" };
     }
-    
-    const wmi = vin.substring(0, 3).toUpperCase();
-    const manufacturerData = MANUFACTURER_WMI[wmi] || { manufacturer: "Unknown", country: "Unknown" };
-    
-    const yearCodes = {
-        'A': 2010, 'B': 2011, 'C': 2012, 'D': 2013, 'E': 2014,
-        'F': 2015, 'G': 2016, 'H': 2017, 'J': 2018, 'K': 2019,
-        'L': 2020, 'M': 2021, 'N': 2022, 'P': 2023, 'R': 2024,
-    };
-    const year = yearCodes[vin[9]?.toUpperCase()] || 2020;
-    
-    const models = MOCK_MODELS[manufacturerData.manufacturer] || ["Unknown Model"];
-    const model = models[Math.floor(Math.random() * models.length)];
-    
-    return {
-        isValid: true,
-        vin,
-        manufacturer: manufacturerData.manufacturer,
-        model,
-        year,
-        country: manufacturerData.country,
-        vehicleType: "Sedan",
-        fuelType: manufacturerData.manufacturer === "Tesla" ? "Electric" : "Gasoline",
-        transmission: manufacturerData.manufacturer === "Tesla" ? "1-Speed Direct" : "Automatic",
-    };
+
+    // Validate VIN format (no I, O, Q)
+    const invalidChars = /[IOQ]/;
+    if (invalidChars.test(cleanVin)) {
+        return { isValid: false, error: "VIN contains invalid characters (I, O, Q are not used)" };
+    }
+
+    try {
+        const response = await fetch(`${NHTSA_VIN_API}/${cleanVin}?format=json`);
+        const data = await response.json();
+
+        if (!data.Results || !data.Results[0]) {
+            return { isValid: false, error: "Unable to decode VIN. Please verify the VIN is correct." };
+        }
+
+        const r = data.Results[0];
+        
+        // NHTSA returns "Invalid" or empty for failed decodes
+        const make = r.Make || '';
+        const model = r.Model || '';
+        const year = r.ModelYear || '';
+
+        if (!make || !model || make === 'Invalid' || model === 'Invalid') {
+            return { 
+                isValid: false, 
+                error: "VIN could not be decoded. This may be an invalid or unsupported VIN." 
+            };
+        }
+
+        return {
+            isValid: true,
+            vin: cleanVin,
+            manufacturer: make,
+            model: model,
+            year: parseInt(year) || new Date().getFullYear(),
+            country: r.PlantCountry || r.PlantCompanyName || 'Unknown',
+            vehicleType: r.BodyClass || r.VehicleType || 'Passenger Car',
+            fuelType: r.FuelTypePrimary || r.FuelTypePrimary1 || 'Gasoline',
+            transmission: r.TransmissionStyle || 'Automatic',
+            engine: r.EngineModel || r.DisplacementL || '',
+            driveType: r.DriveType || '',
+            trim: r.Trim || '',
+            series: r.Series || ''
+        };
+    } catch (err) {
+        console.error('VIN decode error:', err);
+        return { 
+            isValid: false, 
+            error: "Failed to connect to VIN decoder. Please check your connection and try again." 
+        };
+    }
 }
 
 // ============================================================================
