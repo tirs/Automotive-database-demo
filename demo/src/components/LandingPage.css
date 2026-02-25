@@ -207,16 +207,16 @@
 
 .hero-visual {
   position: absolute;
-  right: 5%;
+  right: 3%;
   top: 50%;
   transform: translateY(-50%);
-  width: 45%;
-  max-width: 520px;
+  width: 52%;
+  max-width: 640px;
   z-index: 2;
 }
 
 .hero-mockup {
-  background: rgba(20, 25, 35, 0.9);
+  background: rgba(20, 25, 35, 0.95);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
   overflow: hidden;
@@ -224,51 +224,107 @@
 }
 
 .mockup-header {
-  padding: 16px 20px;
+  padding: 14px 20px;
   background: rgba(255, 255, 255, 0.03);
   display: flex;
   gap: 8px;
 }
 
 .mockup-header span {
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.2);
 }
 
 .mockup-content {
   display: flex;
-  min-height: 280px;
+  min-height: 380px;
 }
 
 .mockup-sidebar {
-  width: 80px;
+  width: 60px;
   background: rgba(0, 0, 0, 0.3);
 }
 
 .mockup-main {
   flex: 1;
-  padding: 24px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 
-.mockup-chart {
-  height: 100px;
-  background: linear-gradient(180deg, rgba(245, 158, 11, 0.2) 0%, transparent 100%);
-  border-radius: 8px;
+.tesla-showcase {
+  flex: 1;
+  min-height: 220px;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.6) 50%, rgba(15, 23, 42, 0.9) 100%);
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+}
+
+.tesla-road {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 32%;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 18px,
+    rgba(255, 255, 255, 0.2) 18px,
+    rgba(255, 255, 255, 0.2) 20px
+  );
+  background-color: rgba(51, 65, 85, 0.6);
+  animation: roadMove 1.5s linear infinite;
+}
+
+@keyframes roadMove {
+  0% { background-position: 0 0; }
+  100% { background-position: 44px 0; }
+}
+
+.tesla-car {
+  position: absolute;
+  bottom: 18%;
+  left: -12%;
+  animation: carDrive 5s ease-in-out infinite;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+@keyframes carDrive {
+  0%, 100% { left: -12%; transform: scale(1); }
+  20% { left: 25%; transform: scale(1.08); }
+  50% { left: 85%; transform: scale(1); }
+  80% { left: 25%; transform: scale(1.08); }
+}
+
+.tesla-svg {
+  width: 140px;
+  height: 49px;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
+}
+
+.tesla-label {
+  font-size: 9px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 1px;
 }
 
 .mockup-cards {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
+  gap: 10px;
 }
 
 .mockup-cards div {
-  height: 50px;
+  height: 44px;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 8px;
 }
