@@ -526,23 +526,38 @@ export async function getWorkflowTemplates() {
     ];
 }
 
+// Template-specific step definitions for execution simulation
+const WORKFLOW_STEPS = {
+    "wf-001": ["Load vehicle & owner data", "Generate follow-up message", "Send notification"],
+    "wf-002": ["Check insurance expiration dates", "Build reminder list", "Send expiration reminders"],
+    "wf-003": ["Evaluate service schedule", "Create reminder sequence", "Send first reminder", "Schedule follow-ups", "Log completion"],
+    "wf-004": ["Match recall to vehicle", "Prepare owner notification", "Send recall alert"],
+    "wf-005": ["Create welcome record", "Generate onboarding checklist", "Send welcome message", "Schedule first check-in"]
+};
+
 export async function triggerWorkflow(templateId, vehicleId, ownerId) {
-    await simulateDelay(500);
+    await simulateDelay(800);
+    
+    const steps = WORKFLOW_STEPS[templateId] || ["Initial Setup", "Process", "Complete"];
+    const totalSteps = steps.length;
+    
+    // Simulate all steps completing
+    const executionLog = steps.map((stepName, idx) => ({
+        stepIndex: idx,
+        stepName,
+        status: "completed",
+        duration: 80 + Math.floor(Math.random() * 120)
+    }));
     
     return {
         instanceId: `inst-${Date.now()}`,
-        status: "running",
-        stepsCompleted: 1,
-        totalSteps: 3,
-        executionLog: [
-            {
-                stepIndex: 0,
-                stepName: "Initial Setup",
-                status: "completed",
-                duration: 150
-            }
-        ],
-        startedAt: new Date().toISOString()
+        status: "completed",
+        stepsCompleted: totalSteps,
+        totalSteps,
+        executionLog,
+        startedAt: new Date().toISOString(),
+        vehicleId,
+        ownerId
     };
 }
 
